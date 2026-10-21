@@ -302,6 +302,26 @@ p{margin:0}
 @media (max-width:560px){.ba{grid-template-columns:1fr}}
 /* preço */
 .pricing{display:grid;grid-template-columns:minmax(0,1fr);max-width:980px}
+/* ===== painel de leads ===== */
+.dash{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(28px,4vw,48px)}
+.dash-shot{margin:0;display:grid;gap:12px;min-width:0}
+.dash-frame{border-radius:18px;border:1px solid var(--line);background:var(--bg-2);overflow:hidden;box-shadow:0 50px 100px -40px rgba(0,0,0,.75)}
+.dash-bar{display:flex;align-items:center;gap:7px;padding:11px 16px;border-bottom:1px solid var(--line)}
+.dash-bar i{width:10px;height:10px;border-radius:50%;background:var(--bg-3)}
+.dash-bar span{margin-left:10px;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.dash-frame img{display:block;width:100%;height:auto}
+.dash-shot figcaption{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.dash-points{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 32px}
+.dash-points li{display:grid;gap:6px;min-width:0;padding-top:18px;border-top:1px solid var(--line)}
+.dash-points b{font-family:var(--f-display);font-size:clamp(19px,1.7vw,22px);letter-spacing:-.01em}
+.dash-points span{color:var(--muted);font-size:15.5px}
+@media (max-width:820px){.dash-points{grid-template-columns:1fr}}
+.pricing.two{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);max-width:none;gap:clamp(20px,2.5vw,28px);align-items:start}
+.addon .price-mo{font-family:var(--f-display);font-weight:700;font-size:clamp(38px,4vw,52px);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.addon .price-mo small{font-size:.38em;font-weight:600;color:var(--muted);letter-spacing:0;margin-left:4px}
+.addon .checks{grid-template-columns:1fr;gap:12px}
+.addon .checks li{font-size:15.5px}
+
 .price-card{
   position:relative;border-radius:28px;padding:clamp(28px,4vw,52px);background:var(--bg-2);border:1px solid var(--line);
   overflow:hidden;display:grid;gap:30px;min-width:0;
@@ -325,7 +345,7 @@ p{margin:0}
 .addon p{color:var(--muted)}
 .addon .tag{justify-self:start}
 .addon-price{font-family:var(--f-mono);font-size:14px;color:var(--fg);padding-top:18px;border-top:1px solid var(--line)}
-@media (max-width:960px){.pricing{grid-template-columns:1fr}}
+@media (max-width:960px){.pricing,.pricing.two{grid-template-columns:1fr}}
 @media (max-width:560px){.checks{grid-template-columns:1fr}}
 
 /* IA */
@@ -447,6 +467,7 @@ html.locked,html.locked body{overflow:hidden}
         <li><a href="#entrega">O que entra</a></li>
         <li><a href="#processo">Como funciona</a></li>
         <li><a href="#cases">Cases</a></li>
+        <li><a href="#painel">Painel</a></li>
         <li><a href="#preco">Preço</a></li>
       </ul>
     </nav>
@@ -709,14 +730,39 @@ html.locked,html.locked body{overflow:hidden}
     </div>
   </section>
 
+  <section class="section" id="painel">
+    <div class="wrap dash">
+      <div class="section-head" data-reveal style="margin-bottom:0">
+        <span class="eyebrow">Depois do clique</span>
+        <h2>Cada contato, num painel só seu.</h2>
+        <p>Quem preencheu o formulário aparece aqui na hora, com nome, WhatsApp e de onde veio. Até quem deixou o número e desistiu de mandar mensagem.</p>
+      </div>
+      <figure class="dash-shot" data-reveal>
+        <div class="dash-frame">
+          <div class="dash-bar" aria-hidden="true"><i></i><i></i><i></i><span>linxio.com.br/painel</span></div>
+          <picture>
+            <source media="(max-width:640px)" srcset="/img/foto-02.webp">
+            <img src="/img/foto-03.webp" width="1600" height="731" loading="lazy" alt="Painel de leads com o total do período, quem mandou e quem não mandou mensagem, reservas fechadas e a lista de quem chamar agora no WhatsApp">
+          </picture>
+        </div>
+        <figcaption>Dados ilustrativos. Faz parte do plano mensal.</figcaption>
+      </figure>
+      <ul class="dash-points" data-reveal>
+        <li><b>Ninguém se perde</b><span>Quem deixou o WhatsApp e não chamou aparece em "Pra chamar agora", com a mensagem pronta.</span></li>
+        <li><b>Você sabe o que funciona</b><span>Instagram, Google ou anúncio: cada contato mostra de onde veio.</span></li>
+        <li><b>Do contato à venda</b><span>Marque quem está em conversa e quem fechou, e veja quantos viraram cliente.</span></li>
+      </ul>
+    </div>
+  </section>
+
   <section class="section" id="preco">
     <div class="wrap">
       <div class="section-head" data-reveal>
         <span class="eyebrow">Preço</span>
-        <h2>Um valor, tudo incluso.</h2>
-        <p>Sem mensalidade pela página. Você paga uma vez e ela é sua.</p>
+        <h2>Um valor pela página. O resto é opcional.</h2>
+        <p>Você paga uma vez e a página é sua. O plano mensal é pra quem quer o painel e o site sempre em dia.</p>
       </div>
-      <div class="pricing">
+      <div class="pricing two">
         <div class="price-card spot" data-reveal>
           <div class="price-top">
             <div>
@@ -737,9 +783,22 @@ html.locked,html.locked body{overflow:hidden}
           </ul>
           <div class="fine">
             <p><b>Domínio e hospedagem</b> ficam no seu nome e são pagos por você direto ao provedor. Eu configuro tudo.</p>
-            <p><b>Alterações depois da entrega</b> são orçadas à parte, quando você precisar.</p>
+            <p><b>Alterações depois da entrega</b> entram no plano mensal ou são orçadas à parte, quando você precisar.</p>
           </div>
           <a class="btn btn-primary magnetic" data-wa="lp" href="#contato" style="justify-self:start"><span class="btn-inner">Quero minha página</span></a>
+        </div>
+        <div class="addon" data-reveal>
+          <span class="tag">Opcional</span>
+          <h3>Plano mensal</h3>
+          <div class="price-mo">R$ 197<small>/mês</small></div>
+          <ul class="checks">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Painel de leads só seu</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Aviso no WhatsApp a cada contato novo</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Aviso de quem preencheu e não chamou</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>1 alteração de conteúdo por mês</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Site monitorado e funcionando</li>
+          </ul>
+          <p class="addon-price">Sem fidelidade. Se cancelar, a página continua no ar e é sua.</p>
         </div>
 
       </div>
@@ -764,7 +823,11 @@ html.locked,html.locked body{overflow:hidden}
         </details>
         <details>
           <summary>E se eu quiser mudar algo depois?<i aria-hidden="true"></i></summary>
-          <p>Durante o projeto você tem 2 rodadas de ajuste. Depois da entrega, qualquer alteração é orçada à parte, só quando você precisar.</p>
+          <p>Durante o projeto você tem 2 rodadas de ajuste. Depois da entrega, o plano mensal inclui 1 alteração de conteúdo por mês. Sem o plano, cada alteração é orçada à parte.</p>
+        </details>
+        <details>
+          <summary>Sou obrigado a assinar o plano mensal?<i aria-hidden="true"></i></summary>
+          <p>Não. A página funciona sem ele e os contatos chegam no seu WhatsApp do mesmo jeito. O plano é pra quem quer ver todos os leads num painel, receber os avisos e ter o site sempre atualizado. Dá pra cancelar quando quiser.</p>
         </details>
         <details>
           <summary>Você também cuida dos anúncios?<i aria-hidden="true"></i></summary>
