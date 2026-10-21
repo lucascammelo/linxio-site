@@ -168,12 +168,28 @@ td.c-src,td.c-when{white-space:nowrap}
   .table-wrap{margin:0;padding:0;overflow:visible}
   table,thead,tbody,tr,td{display:block}
   thead{display:none}
-  tr{border-top:1px solid var(--line);padding:12px 0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px}
+  /* cada lead vira um cartão: nome, uma linha de detalhes, origem e os botões */
+  tr{border-top:1px solid var(--line);padding:14px 0;display:flex;flex-wrap:wrap;align-items:center;gap:4px 0}
   tr:first-child{border-top:0}
   td{border:0;padding:0}
-  td.nm{grid-column:1/-1}
-  td.c-when,td.c-int,td.c-src{font-size:13px;color:var(--muted)}
-  td[data-l]::before{content:attr(data-l) ": ";color:var(--muted)}
+  td.nm{order:1;flex:1 1 auto;min-width:0}
+  td.c-when{order:2;flex:none;font-size:12.5px;color:var(--muted);align-self:flex-start;padding-top:2px}
+  td.c-int,td.c-pes,td.c-data{order:3;flex:none;font-size:13.5px;color:var(--muted);font-family:var(--f-body)}
+  td.c-int{flex-basis:100%;margin-top:4px;color:var(--ink)}
+  td.c-pes:not(:empty)::before{content:"";}
+  td.c-pes:not(:empty)::after{content:" " attr(data-l);}
+  td.c-data:not(:empty)::before{content:"\00a0·\00a0" attr(data-l) " "}
+  td.c-pes:empty+td.c-data:not(:empty)::before{content:attr(data-l) " "}
+  td.c-src{order:4;flex-basis:100%;font-size:13.5px;color:var(--muted)}
+  td.c-msg{order:2;flex:none;margin-left:10px;align-self:flex-start}
+  td.c-when{order:4!important;flex-basis:100%;padding-top:0!important;font-size:12.5px}
+  td.c-st{order:6;margin-top:10px;margin-right:8px;flex:1 1 auto}
+  td.c-wa{order:7;margin-top:10px}
+  td.c-st .status{width:100%}
+  td.c-wa .btn-wa{padding:6px 10px}
+  .filters{width:100%}
+  .filters input{flex:1 1 100%;width:auto}
+  .filters select{flex:1 1 40%}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -253,7 +269,7 @@ td.c-src,td.c-when{white-space:nowrap}
         <div class="filters">
           <input id="f-q" type="search" placeholder="Buscar nome ou número" aria-label="Buscar">
           <select id="f-etapa" aria-label="Filtrar por mensagem"><option value="">Todos</option><option value="abriu_whatsapp">Mandaram mensagem</option><option value="so_preencheu">Não mandaram</option></select>
-          <select id="f-status" aria-label="Filtrar por atendimento"><option value="">Qualquer atendimento</option><option value="novo">Novo</option><option value="em_conversa">Em conversa</option><option value="fechou">Fechou</option><option value="perdeu">Perdeu</option></select>
+          <select id="f-status" aria-label="Filtrar por atendimento"><option value="">Atendimento</option><option value="novo">Novo</option><option value="em_conversa">Em conversa</option><option value="fechou">Fechou</option><option value="perdeu">Perdeu</option></select>
         </div>
       </div>
       <div class="table-wrap">
@@ -397,7 +413,7 @@ td.c-src,td.c-when{white-space:nowrap}
       if(fit&&x.b&&y(x.a)-y(t)>=15) s+='<text class="seg" x="'+(cx+w/2)+'" y="'+((y(x.a)+y(t))/2+4)+'" text-anchor="middle" pointer-events="none">'+x.b+'</text>';
       if(t&&x.a&&x.b) s+='<text class="tot" x="'+(cx+w/2)+'" y="'+(y(t)-5)+'" text-anchor="middle" pointer-events="none">'+t+'</text>';
       else if(t&&(!fit||y(0)-y(t)<15)) s+='<text class="tot" x="'+(cx+w/2)+'" y="'+(y(t)-5)+'" text-anchor="middle" pointer-events="none">'+t+'</text>';
-      if((B.length-1-i)%every===0) s+='<text x="'+(cx+w/2)+'" y="'+(H-10)+'" text-anchor="middle" pointer-events="none">'+x.start.slice(8,10)+'/'+x.start.slice(5,7)+'</text>';
+      if((B.length-1-i)%every===0){ var lx=Math.min(cx+w/2,W-pr-17); s+='<text x="'+lx+'" y="'+(H-10)+'" text-anchor="middle" pointer-events="none">'+x.start.slice(8,10)+'/'+x.start.slice(5,7)+'</text>'; }
     });
     chartBuckets=B;
     $('chart').setAttribute('viewBox','0 0 '+W+' '+H); $('chart').innerHTML=s; $('tip').hidden=true;
@@ -456,12 +472,12 @@ td.c-src,td.c-when{white-space:nowrap}
       return '<tr><td class="c-when num">'+esc(when(l.criado_em))+'</td>'+
         '<td class="nm"><b>'+esc(l.nome||'Sem nome')+'</b><span class="num">'+esc(phone(l.whatsapp))+(l.idioma&&l.idioma!=='pt'?' · '+l.idioma.toUpperCase():'')+'</span></td>'+
         '<td class="c-int">'+esc(l.interesse||'')+(l.extra&&l.extra.site?'<br><span style="color:var(--muted);font-size:13px">'+esc(l.extra.site)+'</span>':'')+'</td>'+
-        '<td class="num" data-l="Pessoas">'+(l.pessoas||'')+'</td>'+
-        '<td class="num" data-l="Data">'+esc(dateBR(l.data_desejada))+'</td>'+
+        '<td class="num c-pes" data-l="'+(l.pessoas?(l.pessoas==1?'pessoa':'pessoas'):'')+'">'+(l.pessoas||'')+'</td>'+
+        '<td class="num c-data" data-l="'+(l.data_desejada?'para':'')+'">'+esc(dateBR(l.data_desejada))+'</td>'+
         '<td class="c-src">'+esc(origin(l))+'</td>'+
-        '<td>'+(l.etapa==='abriu_whatsapp'?'<span class="chip sent">Mandou</span>':'<span class="chip miss">Não mandou</span>')+'</td>'+
-        '<td><select class="status" data-id="'+l.id+'" data-v="'+l.status+'" aria-label="Atendimento de '+esc(l.nome||'lead')+'">'+opts+'</select></td>'+
-        '<td><a class="btn btn-wa" href="'+esc(waLink(l))+'" target="_blank" rel="noopener">WhatsApp</a></td></tr>';
+        '<td class="c-msg">'+(l.etapa==='abriu_whatsapp'?'<span class="chip sent">Mandou</span>':'<span class="chip miss">Não mandou</span>')+'</td>'+
+        '<td class="c-st"><select class="status" data-id="'+l.id+'" data-v="'+l.status+'" aria-label="Atendimento de '+esc(l.nome||'lead')+'">'+opts+'</select></td>'+
+        '<td class="c-wa"><a class="btn btn-wa" href="'+esc(waLink(l))+'" target="_blank" rel="noopener">WhatsApp</a></td></tr>';
     }).join('')||'<tr><td colspan="9" class="empty">Nenhum lead com esses filtros.</td></tr>';
     $('more').hidden=rows.length<=state.shown;
   }

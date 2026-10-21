@@ -310,12 +310,28 @@ p{margin:0}
 .dash-bar i{width:10px;height:10px;border-radius:50%;background:var(--bg-3)}
 .dash-bar span{margin-left:10px;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
 .dash-frame img{display:block;width:100%;height:auto}
-.dash-tabs{display:flex;gap:4px;padding:8px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
-.dash-tabs::-webkit-scrollbar{display:none}
-.dash-tabs button{flex:none;font:inherit;font-size:14px;color:var(--muted);background:none;border:0;border-radius:8px;padding:8px 14px;cursor:pointer;white-space:nowrap}
-.dash-tabs button:hover{color:var(--fg)}
-.dash-tabs button[aria-selected="true"]{background:var(--bg-3);color:var(--fg);font-weight:600}
-.dash-frame [role="tabpanel"][hidden]{display:none}
+.dash-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:8px;border-bottom:1px solid var(--line)}
+.dash-tabs button{position:relative;display:flex;align-items:center;gap:10px;font:inherit;font-size:14.5px;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:10px;padding:10px 14px 13px;cursor:pointer;text-align:left;overflow:hidden;transition:color .2s,background .2s,border-color .2s}
+.dash-tabs button:hover{color:var(--fg);border-color:var(--muted)}
+.dash-tabs button[aria-selected="true"]{background:var(--bg-3);color:var(--fg);font-weight:600;border-color:var(--violet)}
+.dt-n{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-mono);font-size:12px;background:var(--bg);border:1px solid var(--line)}
+.dash-tabs button[aria-selected="true"] .dt-n{background:var(--violet);color:var(--bg);border-color:var(--violet)}
+.dt-bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:transparent}
+.dt-bar i{display:block;height:100%;width:0;background:var(--violet)}
+.dash-tabs button[aria-selected="true"] .dt-bar i{width:100%}
+.dash-frame.auto .dash-tabs button[aria-selected="true"] .dt-bar i{width:0;animation:dtfill var(--dt-time,6s) linear forwards}
+.dash-frame.auto.paused .dash-tabs button[aria-selected="true"] .dt-bar i{animation-play-state:paused}
+@keyframes dtfill{to{width:100%}}
+.dash-stage{position:relative;aspect-ratio:1600/820;background:var(--bg)}
+.dash-panel{position:absolute;inset:0;opacity:0;visibility:hidden;transform:scale(.985);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.8,.2,1),visibility 0s linear .5s}
+.dash-panel.on{opacity:1;visibility:visible;transform:none;transition:opacity .5s ease,transform .6s cubic-bezier(.2,.8,.2,1),visibility 0s}
+.dash-panel img{width:100%;height:auto}
+@media (max-width:640px){
+  .dash-stage{aspect-ratio:700/1515}
+  .dash-tabs{grid-template-columns:1fr 1fr 1fr;gap:4px;padding:6px}
+  .dash-tabs button{flex-direction:column;align-items:center;text-align:center;gap:6px;font-size:12px;padding:8px 4px 11px;line-height:1.2}
+}
+@media (prefers-reduced-motion:reduce){.dash-panel,.dash-panel.on{transition:none;transform:none}}
 
 .dash-shot figcaption{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
 .dash-points{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 32px}
@@ -747,22 +763,17 @@ html.locked,html.locked body{overflow:hidden}
       <figure class="dash-shot" data-reveal>
         <div class="dash-frame">
           <div class="dash-bar" aria-hidden="true"><i></i><i></i><i></i><span>linxio.com.br/painel</span></div>
-          <div class="dash-tabs" role="tablist" aria-label="Telas do painel">
-            <button type="button" role="tab" id="dt-1" aria-controls="dp-1" aria-selected="true">Quem chamar agora</button>
-            <button type="button" role="tab" id="dt-2" aria-controls="dp-2" aria-selected="false" tabindex="-1">Números e origem</button>
-            <button type="button" role="tab" id="dt-3" aria-controls="dp-3" aria-selected="false" tabindex="-1">Todos os leads</button>
-          </div>
-          <div role="tabpanel" id="dp-1" aria-labelledby="dt-1">
-            <picture>
-              <source media="(max-width:640px)" srcset="/img/foto-02.webp">
-              <img src="/img/foto-03.webp" width="1600" height="731" loading="lazy" alt="Painel com o total de leads do período, quem mandou e quem não mandou mensagem, reservas fechadas e a lista de quem chamar agora no WhatsApp">
-            </picture>
-          </div>
-          <div role="tabpanel" id="dp-2" aria-labelledby="dt-2" hidden>
-            <img src="/img/foto-04.webp" width="1600" height="683" loading="lazy" alt="Gráfico de leads por dia com o total escrito em cada barra, e listas de onde vieram os contatos e do interesse de cada um">
-          </div>
-          <div role="tabpanel" id="dp-3" aria-labelledby="dt-3" hidden>
-            <img src="/img/foto-05.webp" width="1600" height="820" loading="lazy" alt="Tabela com todos os leads: quando chegou, nome, interesse, data desejada, origem, se mandou mensagem e o status do atendimento">
+          <div class="dash-tabs" role="tablist" aria-label="Telas do painel"><button type="button" role="tab" id="dt-1" aria-controls="dp-1" aria-selected="true"><span class="dt-n">1</span>Quem chamar agora<span class="dt-bar" aria-hidden="true"><i></i></span></button><button type="button" role="tab" id="dt-2" aria-controls="dp-2" aria-selected="false" tabindex="-1"><span class="dt-n">2</span>Números e origem<span class="dt-bar" aria-hidden="true"><i></i></span></button><button type="button" role="tab" id="dt-3" aria-controls="dp-3" aria-selected="false" tabindex="-1"><span class="dt-n">3</span>Todos os leads<span class="dt-bar" aria-hidden="true"><i></i></span></button></div>
+          <div class="dash-stage">
+            <div class="dash-panel on" role="tabpanel" id="dp-1" aria-labelledby="dt-1">
+              <picture><source media="(max-width:640px)" srcset="/img/foto-02.webp"><img src="/img/foto-03.webp" width="1600" height="731" loading="lazy" alt="Painel com o total de leads do período, quem mandou e quem não mandou mensagem, reservas fechadas e a lista de quem chamar agora no WhatsApp"></picture>
+            </div>
+            <div class="dash-panel" role="tabpanel" id="dp-2" aria-labelledby="dt-2" aria-hidden="true">
+              <picture><source media="(max-width:640px)" srcset="/img/foto-04.webp"><img src="/img/foto-05.webp" width="1600" height="683" loading="lazy" alt="Gráfico de leads por dia com a quantidade escrita em cada barra, e listas de onde vieram os contatos e do interesse de cada um"></picture>
+            </div>
+            <div class="dash-panel" role="tabpanel" id="dp-3" aria-labelledby="dt-3" aria-hidden="true">
+              <picture><source media="(max-width:640px)" srcset="/img/foto-06.webp"><img src="/img/foto-07.webp" width="1600" height="820" loading="lazy" alt="Lista de todos os leads com quando chegou, interesse, data desejada, origem, se mandou mensagem e o status do atendimento"></picture>
+            </div>
           </div>
         </div>
         <figcaption>Dados ilustrativos. Faz parte do plano mensal.</figcaption>
@@ -991,14 +1002,29 @@ html.locked,html.locked body{overflow:hidden}
   lm.addEventListener('click', function(e){ if(e.target===lm) closeLead(); });
   lm.addEventListener('keydown', function(e){ if(e.key==='Escape') closeLead(); });
   if(location.hash==='#contato') setTimeout(openLead, 300);
-  /* ===== abas das telas do painel ===== */
+  /* ===== abas das telas do painel: trocam sozinhas até a pessoa clicar ===== */
   (function(){
-    var tabs=[].slice.call(document.querySelectorAll('.dash-tabs [role="tab"]'));
-    function sel(t){ tabs.forEach(function(x){ var on=x===t; x.setAttribute('aria-selected',on); x.tabIndex=on?0:-1; document.getElementById(x.getAttribute('aria-controls')).hidden=!on; }); }
+    var frame=document.querySelector('.dash-frame'); if(!frame) return;
+    var tabs=[].slice.call(frame.querySelectorAll('[role="tab"]')), cur=0, timer=null, TIME=6000, manual=false, visible=false;
+    var reduceM=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function sel(i){
+      cur=(i+tabs.length)%tabs.length;
+      tabs.forEach(function(t,j){ var on=j===cur, p=document.getElementById(t.getAttribute('aria-controls'));
+        t.setAttribute('aria-selected',on); t.tabIndex=on?0:-1; p.classList.toggle('on',on); p.setAttribute('aria-hidden',!on);
+        var bar=t.querySelector('.dt-bar i'); if(bar){ bar.style.animation='none'; void bar.offsetWidth; bar.style.animation=''; } });
+    }
+    function stop(){ clearTimeout(timer); timer=null; }
+    function loop(){ stop(); if(manual||!visible||reduceM||frame.classList.contains('paused')) return; timer=setTimeout(function(){ sel(cur+1); loop(); },TIME); }
+    if(!reduceM){ frame.classList.add('auto'); frame.style.setProperty('--dt-time',TIME+'ms'); }
     tabs.forEach(function(t,i){
-      t.addEventListener('click',function(){ sel(t); });
-      t.addEventListener('keydown',function(e){ var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0; if(!d) return; e.preventDefault(); var n=tabs[(i+d+tabs.length)%tabs.length]; sel(n); n.focus(); });
+      t.addEventListener('click',function(){ manual=true; frame.classList.remove('auto'); stop(); sel(i); });
+      t.addEventListener('keydown',function(e){ var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0; if(!d) return; e.preventDefault(); manual=true; frame.classList.remove('auto'); stop(); sel(i+d); tabs[cur].focus(); });
     });
+    frame.addEventListener('mouseenter',function(){ frame.classList.add('paused'); stop(); });
+    frame.addEventListener('mouseleave',function(){ frame.classList.remove('paused'); sel(cur); loop(); });
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){ visible=es[0].isIntersecting; if(visible){ sel(cur); loop(); } else stop(); },{threshold:.4}).observe(frame);
+    } else { visible=true; loop(); }
   })();
 
 
