@@ -137,7 +137,10 @@ main{display:grid;gap:20px;padding-block:24px 64px}
 .fsplit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
 .fnote{color:var(--muted);font-size:14px;margin:0}
 @media (max-width:700px){.fstep{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"l p" "t t";gap:4px 10px}.fstep .fl{grid-area:l}.fstep .fpct{grid-area:p;min-width:0}.fstep .ftrack{grid-area:t;height:24px}.fsplit{grid-template-columns:minmax(0,1fr)}}
-.split h3,.fsplit h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:600}
+.uso{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px 28px}
+@media (max-width:980px){.uso{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:700px){.uso{grid-template-columns:minmax(0,1fr)}}
+.split h3,.fsplit h3,.uso h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:600}
 
 .filters{display:flex;gap:8px;flex-wrap:wrap}
 .filters input,.filters select{border:1px solid var(--line);background:var(--sunken);border-radius:8px;padding:7px 10px;min-width:0}
@@ -265,6 +268,19 @@ td.c-src,td.c-when{white-space:nowrap}
       <div class="fsplit" id="fsplit">
         <div><h3>Visitas por origem</h3><div class="hbars" id="visit-src"></div></div>
         <div><h3>Botão mais clicado</h3><div class="hbars" id="click-bars"></div></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-uso" id="uso-panel">
+      <div class="panel-head">
+        <div><h2 id="h-uso">Como as pessoas usam a página</h2><p class="hint">Até onde rolam, quanto tempo ficam e o que mais olham.</p></div>
+      </div>
+      <div class="uso">
+        <div><h3>Até onde rolaram</h3><div class="hbars" id="u-rol"></div></div>
+        <div><h3>Tempo na página</h3><div class="hbars" id="u-tempo"></div></div>
+        <div><h3>Dúvidas mais abertas</h3><div class="hbars" id="u-faq"></div></div>
+        <div><h3>Outros cliques</h3><div class="hbars" id="u-nav"></div></div>
+        <div><h3>Quem abriu o formulário e fechou</h3><div class="hbars" id="u-fecha"></div></div>
       </div>
     </section>
 
@@ -396,7 +412,7 @@ td.c-src,td.c-when{white-space:nowrap}
     $('k-sent').textContent=sent; $('k-sent-sub').textContent=pct(sent,total)+' dos leads';
     $('k-miss').textContent=miss; $('k-miss-sub').textContent=pct(miss,total)+' dos leads';
     $('k-won').textContent=won; $('k-won-sub').textContent=pct(won,total)+' viraram reserva';
-    renderCall(); renderFunnel(); renderChart(); renderBars(); renderTable();
+    renderCall(); renderFunnel(); renderUso(); renderChart(); renderBars(); renderTable();
   }
   function renderCall(){
     var lim=Date.now()-7*864e5, c=state.leads.filter(function(l){return l.etapa==='so_preencheu'&&l.status==='novo'&&new Date(l.criado_em)>=lim;}).slice(0,6);
@@ -501,12 +517,33 @@ td.c-src,td.c-when{white-space:nowrap}
     var vs={}, cs={}; E.forEach(function(e){ if(e.tipo==='visita'){ var o=origin(e); vs[o]=(vs[o]||0)+1; } else if(e.tipo==='clique'&&e.alvo&&e.alvo!=='continuar_whatsapp'){ var a=ALVO[e.alvo]||e.alvo; cs[a]=(cs[a]||0)+1; } });
     bars('visit-src',vs); bars('click-bars',cs);
   }
+  function barsOrd(el,rows,denom,suffix){
+    var max=Math.max.apply(null,rows.map(function(x){return x[1];}).concat([1]));
+    $(el).innerHTML=rows.some(function(x){return x[1];})?rows.map(function(a){ var pc=denom?Math.round(a[1]/denom*100)+'%':''; return '<div class="hbar"><div class="row"><span>'+esc(a[0])+'</span><span class="num">'+a[1]+(pc?' · '+pc+(suffix||''):'')+'</span></div><div class="track"><div class="fill" style="width:'+(a[1]/max*100)+'%"></div></div></div>'; }).join(''):'<p class="empty">Ainda sem dados no período.</p>';
+  }
+  var TEMPOS=['menos de 10s','10 a 30s','30s a 1 min','1 a 3 min','3 a 10 min','mais de 10 min'];
+  var FECHA={vazio:'Fechou sem preencher nada',comecou_e_parou:'Começou e desistiu',com_numero:'Deixou o número e fechou'};
+  function renderUso(){
+    var E=state.events||[]; $('uso-panel').hidden=!E.length; if(!E.length) return;
+    function sess(f){ var o={}; E.forEach(function(e){ if(f(e)) o[e.sessao]=1; }); return Object.keys(o).length; }
+    var vis=sess(function(e){return e.tipo==='visita';});
+    barsOrd('u-rol',['25%','50%','75%','100%'].map(function(m){ return [m==='100%'?'Chegaram ao fim':'Passaram de '+m, sess(function(e){return e.tipo==='rolagem'&&e.alvo===m;})]; }),vis,' das visitas');
+    var tt={}; E.forEach(function(e){ if(e.tipo==='tempo') tt[e.alvo]=(tt[e.alvo]||0)+1; });
+    var ttot=Object.keys(tt).reduce(function(s,k){return s+tt[k];},0);
+    barsOrd('u-tempo',TEMPOS.map(function(k){return [k,tt[k]||0];}),ttot);
+    var fq={}, nv={}, fc={}; E.forEach(function(e){ if(e.tipo==='faq') fq[e.alvo]=(fq[e.alvo]||0)+1; else if(e.tipo==='navegacao') nv[e.alvo]=(nv[e.alvo]||0)+1; else if(e.tipo==='form_fechado'){ var k=FECHA[e.alvo]||e.alvo; fc[k]=(fc[k]||0)+1; } });
+    bars('u-faq',fq); bars('u-nav',nv); bars('u-fecha',fc);
+  }
   function demoEvents(leads,days){
     var seed=11; function rnd(){seed=(seed*16807)%2147483647; return (seed-1)/2147483646;}
     var src=[['instagram','social'],['instagram','cpc'],['google',''],['',''],['facebook','cpc'],['instagram','social']], alv=['topo','topo','flutuante','flutuante','preco','final','menu'], out=[], n=Math.max(leads.length*9,40);
     for(var i=0;i<n;i++){ var t=new Date(Date.now()-rnd()*days*864e5).toISOString(), f=src[Math.floor(rnd()*src.length)], sid='d'+i;
       out.push({tipo:'visita',sessao:sid,utm_source:f[0],utm_medium:f[1],referrer:f[0]===''&&rnd()<.4?'https://www.google.com/':'',criado_em:t});
-      if(rnd()<.24){ out.push({tipo:'clique',sessao:sid,alvo:alv[Math.floor(rnd()*alv.length)],criado_em:t}); if(rnd()<.8) out.push({tipo:'form_aberto',sessao:sid,criado_em:t}); } }
+      var rr=rnd(); ['25%','50%','75%','100%'].forEach(function(m,j){ if(rr>j*.22+.08) out.push({tipo:'rolagem',sessao:sid,alvo:m,criado_em:t}); });
+      out.push({tipo:'tempo',sessao:sid,alvo:TEMPOS[Math.min(5,Math.floor(Math.pow(rnd(),1.6)*6))],criado_em:t});
+      if(rnd()<.12) out.push({tipo:'faq',sessao:sid,alvo:['Em quanto tempo a página fica pronta?','Preciso já ter domínio e hospedagem?','Sou obrigado a assinar o plano mensal?','Serve pro meu tipo de negócio?','E se eu quiser mudar algo depois?'][Math.floor(Math.pow(rnd(),1.5)*5)],criado_em:t});
+      if(rnd()<.15) out.push({tipo:'navegacao',sessao:sid,alvo:['menu: Preço','botão: Ver o que entra','link: tarzantrip.com.br','aba do painel: Números e origem','menu: Cases','aba do painel: Todos os leads'][Math.floor(rnd()*6)],criado_em:t});
+      if(rnd()<.24){ out.push({tipo:'clique',sessao:sid,alvo:alv[Math.floor(rnd()*alv.length)],criado_em:t}); if(rnd()<.8){ out.push({tipo:'form_aberto',sessao:sid,criado_em:t}); if(rnd()<.35) out.push({tipo:'form_fechado',sessao:sid,alvo:['vazio','vazio','comecou_e_parou','com_numero'][Math.floor(rnd()*4)],criado_em:t}); } } }
     return out;
   }
 

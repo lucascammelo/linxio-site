@@ -1006,6 +1006,37 @@ html.locked,html.locked body{overflow:hidden}
   }
   evento('visita');
 
+  /* rolagem: marca quando a pessoa passa de 25%, 50%, 75% e chega ao fim da página */
+  (function(){
+    var marcos=[25,50,75,100], feitos={};
+    function check(){
+      var h=document.documentElement, max=h.scrollHeight-window.innerHeight; if(max<=0) return;
+      var pct=Math.round((window.scrollY||h.scrollTop)/max*100);
+      marcos.forEach(function(m){ if(pct>=m-2 && !feitos[m]){ feitos[m]=1; evento('rolagem', m+'%'); } });
+    }
+    var t; window.addEventListener('scroll',function(){ clearTimeout(t); t=setTimeout(check,250); },{passive:true});
+  })();
+
+  /* tempo na página: conta só o tempo com a aba visível e envia quando a pessoa sai */
+  (function(){
+    var visivel=0, desde=document.visibilityState==='visible'?Date.now():0, enviado=false;
+    function faixa(sg){ return sg<10?'menos de 10s':sg<30?'10 a 30s':sg<60?'30s a 1 min':sg<180?'1 a 3 min':sg<600?'3 a 10 min':'mais de 10 min'; }
+    function sair(){ if(desde){ visivel+=Date.now()-desde; desde=0; } if(!enviado){ enviado=true; evento('tempo', faixa(Math.round(visivel/1000))); } }
+    document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden') sair(); else if(!desde) desde=Date.now(); });
+    window.addEventListener('pagehide',sair);
+  })();
+
+  /* outros cliques: menu, "Ver o que entra", links externos, abas do painel e perguntas abertas */
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a,button,summary'); if(!a || a.hasAttribute('data-wa') || a.id==='lead-send') return;
+    if(a.matches('.nav-links a')) return evento('navegacao','menu: '+a.textContent.trim().slice(0,30));
+    if(a.matches('[role="tab"]')) return evento('navegacao','aba do painel: '+a.textContent.replace(/^\d/,'').trim().slice(0,30));
+    if(a.tagName==='SUMMARY'){ var d=a.parentElement; if(d && !d.open) evento('faq', a.textContent.trim().slice(0,80)); return; }
+    var href=a.getAttribute('href')||'';
+    if(/^https?:/.test(href)){ try{ return evento('navegacao','link: '+new URL(href).hostname.replace(/^www\./,'')); }catch(err){} }
+    if(href.charAt(0)==='#' && a.textContent.trim()) return evento('navegacao','botão: '+a.textContent.trim().slice(0,30));
+  },true);
+
   /* ===== formulário de contato: grava o lead e abre o WhatsApp ===== */
   var lm = document.getElementById('lead-modal'), lf = document.getElementById('lead-form');
   var lw = document.getElementById('lead-whats'), lerr = document.getElementById('lead-err'), lsend = document.getElementById('lead-send');
@@ -1052,6 +1083,7 @@ html.locked,html.locked body{overflow:hidden}
     setTimeout(function(){ document.getElementById('lead-nome').focus({preventScroll:true}); },60);
   }
   function closeLead(){
+    if(!opened) evento('form_fechado', digits().length>=12 ? 'com_numero' : (val('lead-nome')||val('lead-negocio') ? 'comecou_e_parou' : 'vazio'));
     lm.classList.remove('open'); document.documentElement.classList.remove('locked');
     if(window.__lenis) window.__lenis.start();
     setTimeout(function(){ lm.hidden=true; if(lastFocus) lastFocus.focus({preventScroll:true}); },250);
