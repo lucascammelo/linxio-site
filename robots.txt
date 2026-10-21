@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /painel
+Sitemap: https://linxio.com.br/sitemap.xml

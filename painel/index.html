@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%231F6FB2%22/%3E%3Ctext x=%2216%22 y=%2223%22 font-family=%22Arial%22 font-weight=%22700%22 font-size=%2219%22 text-anchor=%22middle%22 fill=%22white%22%3EL%3C/text%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Painel de Leads Linxio</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: barra do cliente no topo, faixa de números, "pra chamar agora" em destaque, gráficos lado a lado, tabela de leads embaixo. */
+:root{
+  --bg:#EEF2F7; --surface:#FFFFFF; --sunken:#F5F8FB; --line:#D9E1EB; --ink:#0E1726; --muted:#5B6B80;
+  --accent:#1F6FB2; --accent-soft:#DCEBF8; --warn:#C25A12; --warn-soft:#FCE7D6; --good:#1B7F4B; --good-soft:#DDF3E6; --bad:#9AA6B6;
+  --bar-a:#1F6FB2; --bar-b:#F08A3C;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Instrument Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A111D; --surface:#111B2B; --sunken:#0D1624; --line:#22314A; --ink:#E7EEF7; --muted:#8E9DB3;
+  --accent:#6CB4EE; --accent-soft:#16304B; --warn:#FF9A52; --warn-soft:#3A2414; --good:#4CC488; --good-soft:#123222; --bad:#5E6E85;
+  --bar-a:#6CB4EE; --bar-b:#FF8740; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A111D; --surface:#111B2B; --sunken:#0D1624; --line:#22314A; --ink:#E7EEF7; --muted:#8E9DB3;
+  --accent:#6CB4EE; --accent-soft:#16304B; --warn:#FF9A52; --warn-soft:#3A2414; --good:#4CC488; --good-soft:#123222; --bad:#5E6E85;
+  --bar-a:#6CB4EE; --bar-b:#FF8740; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+span.num{white-space:nowrap}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:500;text-decoration:none;color:var(--ink);white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-wa{background:var(--good-soft);border-color:transparent;color:var(--good);padding:6px 12px;font-size:14px}
+.btn-wa:hover{border-color:var(--good)}
+
+/* ---------- login ---------- */
+#login{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding-block:48px}
+.login-card{width:min(100%,400px);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:32px 28px;display:grid;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700;font-size:20px;letter-spacing:-.01em}
+.brand i{width:26px;height:26px;border-radius:7px;background:var(--accent);display:grid;place-items:center;color:var(--surface);font-style:normal;font-size:15px}
+.login-card h1{font-family:var(--f-display);font-weight:700;font-size:26px;line-height:1.15;margin:0;text-wrap:balance}
+.login-card p{margin:0;color:var(--muted)}
+.field{display:grid;gap:6px}
+.field label{font-size:13px;font-weight:600}
+.field input{width:100%;border:1px solid var(--line);background:var(--sunken);border-radius:8px;padding:10px 12px}
+.field input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.msg{font-size:14px;padding:10px 12px;border-radius:8px;background:var(--warn-soft);color:var(--warn)}
+.msg.ok{background:var(--good-soft);color:var(--good)}
+.linkbtn{background:none;border:0;padding:0;color:var(--accent);cursor:pointer;text-decoration:underline;font-size:14px}
+.login-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px}
+
+/* ---------- app ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.top .wrap{display:flex;align-items:center;gap:16px;padding-block:12px;flex-wrap:wrap}
+.top .brand{font-size:17px}
+.client{display:flex;align-items:center;gap:8px;min-width:0}
+.client strong{font-family:var(--f-display);font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.client select{border:1px solid var(--line);background:var(--sunken);border-radius:8px;padding:6px 8px}
+.sep{width:1px;height:22px;background:var(--line)}
+.top-right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--sunken)}
+.seg button{border:0;background:none;padding:6px 12px;cursor:pointer;font-size:14px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:inset 0 0 0 1px var(--line)}
+.demo-band{background:var(--warn-soft);color:var(--warn);font-size:14px}
+.demo-band .wrap{padding-block:8px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+
+main{display:grid;gap:20px;padding-block:24px 64px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.kpi{padding:18px 20px;display:grid;gap:4px;border-left:1px solid var(--line);min-width:0}
+.kpi:first-child{border-left:0}
+.kpi .lbl{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.kpi .val{font-family:var(--f-display);font-weight:700;font-size:34px;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi .sub{font-size:13px;color:var(--muted)}
+.kpi.warn .val{color:var(--warn)}
+.kpi.good .val{color:var(--good)}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;min-width:0}
+.panel h2{font-family:var(--f-display);font-weight:700;font-size:18px;margin:0;letter-spacing:-.01em}
+.panel .hint{margin:2px 0 0;color:var(--muted);font-size:14px}
+.panel-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+
+.callnow{border-color:var(--warn);background:linear-gradient(var(--warn-soft),var(--warn-soft)) top/100% 4px no-repeat,var(--surface)}
+.call-list{display:grid;gap:0}
+.call{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.call:first-child{border-top:0;padding-top:0}
+.call .who{min-width:0}
+.call .who b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.call .who span,.call .what{font-size:14px;color:var(--muted)}
+.call .ago{font-size:13px;color:var(--warn);font-weight:600;white-space:nowrap}
+.empty{color:var(--muted);font-size:14px;padding:8px 0}
+
+.grid2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+#chart{width:100%;height:auto;display:block}
+#chart text{fill:var(--muted);font-family:var(--f-mono);font-size:11px}
+#chart .grid{stroke:var(--line);stroke-width:1}
+.hbars{display:grid;gap:12px}
+.hbar{display:grid;gap:5px}
+.hbar .row{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+.hbar .row span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hbar .track{height:8px;border-radius:4px;background:var(--sunken);overflow:hidden}
+.hbar .fill{height:100%;border-radius:4px;background:var(--accent)}
+.split{display:grid;gap:24px}
+.split h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:600}
+
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filters input,.filters select{border:1px solid var(--line);background:var(--sunken);border-radius:8px;padding:7px 10px;min-width:0}
+.filters input{width:220px;max-width:100%}
+.table-wrap{overflow-x:auto;margin:0 -20px;padding:0 20px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td.nm b{display:block}
+td.nm span{color:var(--muted);font-size:13px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.chip.sent{background:var(--accent-soft);color:var(--accent)}
+.chip.miss{background:var(--warn-soft);color:var(--warn)}
+.status{border:1px solid var(--line);border-radius:8px;padding:5px 8px;background:var(--sunken);font-size:13px}
+.status[data-v="fechou"]{background:var(--good-soft);color:var(--good);border-color:transparent;font-weight:600}
+.status[data-v="perdeu"]{color:var(--bad)}
+.status[data-v="em_conversa"]{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.more{display:flex;justify-content:center;padding-top:14px}
+.foot{color:var(--muted);font-size:13px;text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:14px;z-index:20}
+
+@media (max-width:980px){
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kpi:nth-child(3){border-left:0}
+  .kpi:nth-child(n+3){border-top:1px solid var(--line)}
+  .grid2{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:700px){
+  .sep,.top .brand span{display:none}
+  .top-right{margin-left:0;width:100%;justify-content:space-between}
+  .demo-band .wrap{gap:4px 10px;font-size:13px}
+  .kpi{padding:14px 16px}
+  .kpi .val{font-size:28px}
+  .call{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"who ago" "what wa"}
+  .call .who{grid-area:who}.call .ago{grid-area:ago;justify-self:end}.call .what{grid-area:what}.call .btn-wa{grid-area:wa}
+  .table-wrap{margin:0;padding:0;overflow:visible}
+  table,thead,tbody,tr,td{display:block}
+  thead{display:none}
+  tr{border-top:1px solid var(--line);padding:12px 0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px}
+  tr:first-child{border-top:0}
+  td{border:0;padding:0}
+  td.nm{grid-column:1/-1}
+  td.c-when,td.c-int,td.c-src{font-size:13px;color:var(--muted)}
+  td[data-l]::before{content:attr(data-l) ": ";color:var(--muted)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<section id="login" class="wrap" hidden>
+  <form class="login-card" id="login-form" novalidate>
+    <div class="brand"><i>L</i>Linxio</div>
+    <div>
+      <h1>Seus leads do site</h1>
+      <p>Entre com o e-mail e a senha que a Linxio te enviou.</p>
+    </div>
+    <div class="field"><label for="l-email">E-mail</label><input id="l-email" type="email" autocomplete="email" required></div>
+    <div class="field" id="pass-field"><label for="l-pass">Senha</label><input id="l-pass" type="password" autocomplete="current-password" required></div>
+    <p class="msg" id="l-msg" hidden></p>
+    <button class="btn btn-primary" id="l-submit" type="submit">Entrar</button>
+    <div class="login-foot">
+      <button type="button" class="linkbtn" id="l-forgot">Esqueci a senha</button>
+      <button type="button" class="linkbtn" id="l-demo">Ver com dados de exemplo</button>
+    </div>
+  </form>
+</section>
+
+<div id="app" hidden>
+  <div class="demo-band" id="demo-band" hidden><div class="wrap"><strong>Dados de exemplo.</strong> Nenhum lead real aparece aqui. <button class="linkbtn" id="exit-demo" type="button">Entrar com sua conta</button></div></div>
+  <header class="top">
+    <div class="wrap">
+      <div class="brand"><i>L</i><span>Linxio</span></div>
+      <div class="sep"></div>
+      <div class="client"><strong id="client-name">Tarzan Trip</strong><select id="client-pick" aria-label="Cliente" hidden></select></div>
+      <div class="top-right">
+        <div class="seg" role="group" aria-label="Período">
+          <button type="button" data-days="7" aria-pressed="false">7 dias</button>
+          <button type="button" data-days="30" aria-pressed="true">30 dias</button>
+          <button type="button" data-days="90" aria-pressed="false">90 dias</button>
+        </div>
+        <button class="btn" id="logout" type="button">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="kpis" aria-label="Resumo do período">
+      <div class="kpi"><span class="lbl">Leads</span><span class="val" id="k-total">0</span><span class="sub" id="k-total-sub">no período</span></div>
+      <div class="kpi"><span class="lbl">Mandaram mensagem</span><span class="val" id="k-sent">0</span><span class="sub" id="k-sent-sub">abriram o WhatsApp</span></div>
+      <div class="kpi warn"><span class="lbl">Não mandaram</span><span class="val" id="k-miss">0</span><span class="sub" id="k-miss-sub">preencheram e pararam</span></div>
+      <div class="kpi good"><span class="lbl">Fechados</span><span class="val" id="k-won">0</span><span class="sub" id="k-won-sub">marcados como fechou</span></div>
+    </section>
+
+    <section class="panel callnow" aria-labelledby="h-call">
+      <div class="panel-head">
+        <div><h2 id="h-call">Pra chamar agora</h2><p class="hint">Deixaram o WhatsApp no site nos últimos 7 dias mas não mandaram mensagem. Quanto antes, maior a chance.</p></div>
+      </div>
+      <div class="call-list" id="call-list"></div>
+    </section>
+
+    <div class="grid2">
+      <section class="panel" aria-labelledby="h-chart">
+        <div class="panel-head">
+          <div><h2 id="h-chart">Leads por dia</h2><p class="hint" id="chart-hint">Últimos 30 dias</p></div>
+          <div class="legend"><span><i style="background:var(--bar-a)"></i>Mandaram mensagem</span><span><i style="background:var(--bar-b)"></i>Não mandaram</span></div>
+        </div>
+        <svg id="chart" viewBox="0 0 640 240" role="img" aria-label="Gráfico de leads por dia"></svg>
+      </section>
+      <section class="panel split" aria-label="Origem e interesse">
+        <div><h3>De onde vieram</h3><div class="hbars" id="src-bars"></div></div>
+        <div><h3>Interesse</h3><div class="hbars" id="int-bars"></div></div>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="h-table">
+      <div class="panel-head">
+        <div><h2 id="h-table">Todos os leads</h2><p class="hint" id="table-hint"></p></div>
+        <div class="filters">
+          <input id="f-q" type="search" placeholder="Buscar nome ou número" aria-label="Buscar">
+          <select id="f-etapa" aria-label="Filtrar por mensagem"><option value="">Todos</option><option value="abriu_whatsapp">Mandaram mensagem</option><option value="so_preencheu">Não mandaram</option></select>
+          <select id="f-status" aria-label="Filtrar por atendimento"><option value="">Qualquer atendimento</option><option value="novo">Novo</option><option value="em_conversa">Em conversa</option><option value="fechou">Fechou</option><option value="perdeu">Perdeu</option></select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Quando</th><th>Nome</th><th>Interesse</th><th>Pessoas</th><th>Data desejada</th><th>Origem</th><th>Mensagem</th><th>Atendimento</th><th></th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div class="more"><button class="btn" id="more" type="button" hidden>Mostrar mais</button></div>
+    </section>
+
+    <p class="foot">Painel feito pela Linxio · Os leads chegam do formulário do seu site em tempo real.</p>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+(function(){
+  var SUPABASE_URL='https://ycbokvixbxkekcgnzhwl.supabase.co';
+  var SUPABASE_KEY='sb_publishable_cdAVG9aWMzd9QAZXe6HkZQ_qX3CV8Sb'; // chave pública: o acesso real é controlado pelo login + RLS
+  var TZ='America/Sao_Paulo';
+  var $=function(id){return document.getElementById(id);};
+  var sb=null; try{ if(window.supabase) sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY); }catch(e){}
+
+  var state={demo:false,days:30,leads:[],clients:[],client:null,shown:40};
+
+  /* ---------- utilidades ---------- */
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  var fmtDay=new Intl.DateTimeFormat('pt-BR',{timeZone:TZ,day:'2-digit',month:'2-digit'});
+  var fmtTime=new Intl.DateTimeFormat('pt-BR',{timeZone:TZ,hour:'2-digit',minute:'2-digit'});
+  var fmtKey=new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'});
+  function dayKey(d){return fmtKey.format(d);}
+  function when(iso){var d=new Date(iso), t=dayKey(new Date()), y=dayKey(new Date(Date.now()-864e5)), k=dayKey(d);
+    return (k===t?'Hoje':k===y?'Ontem':fmtDay.format(d))+' '+fmtTime.format(d);}
+  function ago(iso){var m=Math.round((Date.now()-new Date(iso))/6e4); if(m<60) return 'há '+Math.max(m,1)+' min'; var h=Math.round(m/60); if(h<24) return 'há '+h+' h'; var d=Math.round(h/24); return 'há '+d+(d===1?' dia':' dias');}
+  function dateBR(s){if(!s) return '';var p=String(s).slice(0,10).split('-');return p.length===3?p[2]+'/'+p[1]:s;}
+  function phone(w){w=String(w||'').replace(/\D/g,''); if(w.length===13&&w.indexOf('55')===0) return '('+w.slice(2,4)+') '+w.slice(4,9)+'-'+w.slice(9); return w?'+'+w:'';}
+  function waLink(l){var n=String(l.whatsapp||'').replace(/\D/g,''); var nome=(l.nome||'').split(' ')[0];
+    var txt=(l.idioma==='en'?'Hi '+nome+'! This is Tarzan Trip, you left your number on our website.':l.idioma==='es'?'¡Hola '+nome+'! Soy de Tarzan Trip, dejaste tu número en nuestro sitio.':'Oi '+nome+'! Aqui é da '+(state.client?state.client.nome:'')+', você deixou seu número no nosso site.');
+    return 'https://wa.me/'+n+'?text='+encodeURIComponent(txt.replace('  ',' '));}
+  function origin(l){
+    var s=(l.utm_source||'').toLowerCase(), m=(l.utm_medium||'').toLowerCase(), paid=/cpc|paid|ads|anuncio|anúncio/.test(m);
+    var r=''; try{ r=l.referrer?new URL(l.referrer).hostname.replace(/^www\./,''):''; }catch(e){}
+    var base;
+    if(/insta|^ig$/.test(s)||/instagram\./.test(r)) base='Instagram';
+    else if(/face|^fb$|meta/.test(s)||/facebook\.|fb\./.test(r)) base='Facebook';
+    else if(/google|gads/.test(s)||/google\./.test(r)) base='Google';
+    else if(/whats/.test(s)) base='WhatsApp';
+    else if(s) base=s.charAt(0).toUpperCase()+s.slice(1);
+    else if(r) base=r;
+    else base='Direto';
+    return paid?base+' · anúncio':base;
+  }
+  function toast(t){var el=$('toast'); el.textContent=t; el.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(function(){el.hidden=true;},2600);}
+
+  /* ---------- dados de exemplo ---------- */
+  function demoData(){
+    var seed=7; function rnd(){seed=(seed*16807)%2147483647; return (seed-1)/2147483646;}
+    function pick(a){return a[Math.floor(rnd()*a.length)];}
+    var nomes=['Mariana Lopes','Rafael Souza','Juliana Costa','Pedro Henrique','Camila Rocha','Bruno Alves','Larissa Martins','Thiago Ribeiro','Fernanda Lima','Gustavo Pereira','Aline Duarte','Lucas Moreira','Beatriz Nunes','Felipe Araújo','Isabela Freitas','Diego Carvalho','Natália Gomes','Rodrigo Teixeira','Emily Carter','Sophie Martin','Liam Walker','Valentina Gómez','Martín Fernández','Lucía Torres','Sebastián Ruiz'];
+    var fontes=[['instagram','social'],['instagram','cpc'],['google','organic'],['','',''],['facebook','cpc'],['google','cpc'],['instagram','social']];
+    var out=[], now=Date.now();
+    for(var i=0;i<74;i++){
+      var dias=Math.floor(Math.pow(rnd(),1.4)*88), h=8+Math.floor(rnd()*14);
+      var t=new Date(now-dias*864e5-(rnd()*10*36e5)); t.setMinutes(Math.floor(rnd()*60));
+      if(i<3) t=new Date(now-(i*47+18)*6e4);
+      var nome=nomes[i%nomes.length], estr=/Emily|Sophie|Liam/.test(nome)?'en':/Valentina|Martín|Lucía|Sebastián/.test(nome)?'es':'pt';
+      var f=pick(fontes), etapa=(i<3||rnd()<.28)?'so_preencheu':'abriu_whatsapp';
+      var st=etapa==='so_preencheu'?(i<3?'novo':pick(['novo','perdeu','em_conversa'])):pick(['novo','em_conversa','fechou','fechou','perdeu','fechou']);
+      if(dias<2&&st==='perdeu') st='novo';
+      var data=new Date(t.getTime()+(3+Math.floor(rnd()*20))*864e5);
+      out.push({id:i+1,lead_id:'demo'+i,criado_em:t.toISOString(),etapa:etapa,status:st,nome:nome,
+        whatsapp:estr==='pt'?'55219'+String(80000000+Math.floor(rnd()*19999999)):estr==='en'?'1415'+String(1000000+Math.floor(rnd()*8999999)):'549113'+String(1000000+Math.floor(rnd()*8999999)),
+        interesse:rnd()<.07?'ainda não sei qual trilha':(rnd()<.58?'Pedra da Gávea':'Morro Dois Irmãos')+(rnd()<.12?' (privativo)':''),
+        pessoas:1+Math.floor(rnd()*4),data_desejada:dayKey(data),idioma:estr,utm_source:f[0],utm_medium:f[1],referrer:f[0]===''&&rnd()<.4?'https://www.google.com/':''});
+    }
+    return out.sort(function(a,b){return new Date(b.criado_em)-new Date(a.criado_em);});
+  }
+
+  /* ---------- carregar ---------- */
+  function load(){
+    if(state.demo){ var all=demoData(), since=Date.now()-state.days*864e5; state.leads=all.filter(function(l){return new Date(l.criado_em)>=since;}); render(); return Promise.resolve(); }
+    var since=new Date(Date.now()-state.days*864e5).toISOString();
+    return sb.from('leads').select('id,lead_id,criado_em,etapa,status,nome,whatsapp,interesse,pessoas,data_desejada,idioma,utm_source,utm_medium,utm_campaign,referrer,extra')
+      .eq('cliente_id',state.client.id).gte('criado_em',since).order('criado_em',{ascending:false}).limit(2000)
+      .then(function(r){ if(r.error){toast('Não consegui carregar os leads. Atualize a página.'); return;} state.leads=r.data||[]; render(); });
+  }
+
+  /* ---------- render ---------- */
+  function pct(a,b){return b?Math.round(a/b*100)+'%':'0%';}
+  function render(){
+    var L=state.leads, total=L.length,
+      sent=L.filter(function(l){return l.etapa==='abriu_whatsapp';}).length,
+      miss=total-sent, won=L.filter(function(l){return l.status==='fechou';}).length;
+    $('k-total').textContent=total; $('k-total-sub').textContent='nos últimos '+state.days+' dias';
+    $('k-sent').textContent=sent; $('k-sent-sub').textContent=pct(sent,total)+' dos leads';
+    $('k-miss').textContent=miss; $('k-miss-sub').textContent=pct(miss,total)+' dos leads';
+    $('k-won').textContent=won; $('k-won-sub').textContent=pct(won,total)+' viraram reserva';
+    renderCall(); renderChart(); renderBars(); renderTable();
+  }
+  function renderCall(){
+    var lim=Date.now()-7*864e5, c=state.leads.filter(function(l){return l.etapa==='so_preencheu'&&l.status==='novo'&&new Date(l.criado_em)>=lim;}).slice(0,6);
+    $('call-list').innerHTML=c.length?c.map(function(l){
+      return '<div class="call"><div class="who"><b>'+esc(l.nome||'Sem nome')+'</b><span class="num">'+esc(phone(l.whatsapp))+'</span></div>'+
+        '<div class="what">'+esc(l.interesse||'')+(l.pessoas?' · '+l.pessoas+(l.pessoas==1?' pessoa':' pessoas'):'')+'</div>'+
+        '<span class="ago">'+ago(l.criado_em)+'</span>'+
+        '<a class="btn btn-wa" href="'+esc(waLink(l))+'" target="_blank" rel="noopener">Chamar no WhatsApp</a></div>';
+    }).join(''):'<p class="empty">Ninguém pendente. Todo mundo que deixou o número já mandou mensagem ou foi atendido.</p>';
+  }
+  function renderChart(){
+    var days=state.days, W=640, H=240, pl=32, pr=8, pt=12, pb=28, iw=W-pl-pr, ih=H-pt-pb;
+    var keys=[], map={};
+    for(var i=days-1;i>=0;i--){var k=dayKey(new Date(Date.now()-i*864e5)); keys.push(k); map[k]={a:0,b:0};}
+    state.leads.forEach(function(l){var k=dayKey(new Date(l.criado_em)); if(map[k]) map[k][l.etapa==='abriu_whatsapp'?'a':'b']++;});
+    var max=0; keys.forEach(function(k){max=Math.max(max,map[k].a+map[k].b);});
+    var step=max<=4?1:max<=10?2:max<=20?5:10, top=Math.max(step*Math.ceil(Math.max(max,1)/step),step);
+    var y=function(v){return pt+ih-(v/top)*ih;}, bw=iw/days, gap=Math.max(1,bw*.22), s='';
+    for(var v=0;v<=top;v+=step){ s+='<line class="grid" x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y(v)+'" y2="'+y(v)+'"/><text x="'+(pl-6)+'" y="'+(y(v)+4)+'" text-anchor="end">'+v+'</text>'; }
+    var every=days<=7?1:days<=30?5:15;
+    keys.forEach(function(k,i){
+      var x=pl+i*bw+gap/2, w=Math.max(1,bw-gap), a=map[k].a, b=map[k].b;
+      if(a) s+='<rect x="'+x+'" y="'+y(a)+'" width="'+w+'" height="'+(y(0)-y(a))+'" rx="1.5" fill="var(--bar-a)"><title>'+k.split('-').reverse().slice(0,2).join('/')+': '+a+' mandaram mensagem</title></rect>';
+      if(b) s+='<rect x="'+x+'" y="'+y(a+b)+'" width="'+w+'" height="'+(y(a)-y(a+b))+'" rx="1.5" fill="var(--bar-b)"><title>'+k.split('-').reverse().slice(0,2).join('/')+': '+b+' não mandaram</title></rect>';
+      if((days-1-i)%every===0) s+='<text x="'+(x+w/2)+'" y="'+(H-8)+'" text-anchor="middle">'+k.slice(8,10)+'/'+k.slice(5,7)+'</text>';
+    });
+    $('chart').innerHTML=s; $('chart-hint').textContent='Últimos '+days+' dias';
+  }
+  function bars(el,counts){
+    var arr=Object.keys(counts).map(function(k){return [k,counts[k]];}).sort(function(a,b){return b[1]-a[1];});
+    var total=arr.reduce(function(s,a){return s+a[1];},0), max=arr.length?arr[0][1]:1;
+    if(arr.length>6){ var rest=arr.slice(5).reduce(function(s,a){return s+a[1];},0); arr=arr.slice(0,5).concat([['Outros',rest]]); }
+    $(el).innerHTML=arr.length?arr.map(function(a){return '<div class="hbar"><div class="row"><span>'+esc(a[0])+'</span><span class="num">'+a[1]+' · '+pct(a[1],total)+'</span></div><div class="track"><div class="fill" style="width:'+(a[1]/max*100)+'%"></div></div></div>';}).join(''):'<p class="empty">Sem leads no período.</p>';
+  }
+  function renderBars(){
+    var s={}, it={};
+    state.leads.forEach(function(l){ var o=origin(l); s[o]=(s[o]||0)+1; var i=(l.interesse||'Não informado').replace(/\s*\(privativo\)/,''); it[i]=(it[i]||0)+1; });
+    bars('src-bars',s); bars('int-bars',it);
+  }
+  var ST={novo:'Novo',em_conversa:'Em conversa',fechou:'Fechou',perdeu:'Perdeu'};
+  function filtered(){
+    var q=$('f-q').value.trim().toLowerCase(), qd=q.replace(/\D/g,''), e=$('f-etapa').value, st=$('f-status').value;
+    return state.leads.filter(function(l){
+      if(e&&l.etapa!==e) return false; if(st&&l.status!==st) return false;
+      if(q&&!((l.nome||'').toLowerCase().indexOf(q)>-1||(qd&&String(l.whatsapp||'').indexOf(qd)>-1))) return false;
+      return true;});
+  }
+  function renderTable(){
+    var rows=filtered(), vis=rows.slice(0,state.shown);
+    $('table-hint').textContent=rows.length+(rows.length===1?' lead':' leads')+(rows.length!==state.leads.length?' de '+state.leads.length:'');
+    $('rows').innerHTML=vis.map(function(l){
+      var opts=Object.keys(ST).map(function(k){return '<option value="'+k+'"'+(k===l.status?' selected':'')+'>'+ST[k]+'</option>';}).join('');
+      return '<tr><td class="c-when num">'+esc(when(l.criado_em))+'</td>'+
+        '<td class="nm"><b>'+esc(l.nome||'Sem nome')+'</b><span class="num">'+esc(phone(l.whatsapp))+(l.idioma&&l.idioma!=='pt'?' · '+l.idioma.toUpperCase():'')+'</span></td>'+
+        '<td class="c-int">'+esc(l.interesse||'')+(l.extra&&l.extra.site?'<br><span style="color:var(--muted);font-size:13px">'+esc(l.extra.site)+'</span>':'')+'</td>'+
+        '<td class="num" data-l="Pessoas">'+(l.pessoas||'')+'</td>'+
+        '<td class="num" data-l="Data">'+esc(dateBR(l.data_desejada))+'</td>'+
+        '<td class="c-src">'+esc(origin(l))+'</td>'+
+        '<td>'+(l.etapa==='abriu_whatsapp'?'<span class="chip sent">Mandou</span>':'<span class="chip miss">Não mandou</span>')+'</td>'+
+        '<td><select class="status" data-id="'+l.id+'" data-v="'+l.status+'" aria-label="Atendimento de '+esc(l.nome||'lead')+'">'+opts+'</select></td>'+
+        '<td><a class="btn btn-wa" href="'+esc(waLink(l))+'" target="_blank" rel="noopener">WhatsApp</a></td></tr>';
+    }).join('')||'<tr><td colspan="9" class="empty">Nenhum lead com esses filtros.</td></tr>';
+    $('more').hidden=rows.length<=state.shown;
+  }
+
+  /* ---------- eventos ---------- */
+  ['f-q','f-etapa','f-status'].forEach(function(id){$(id).addEventListener('input',function(){state.shown=40;renderTable();});});
+  $('more').addEventListener('click',function(){state.shown+=40;renderTable();});
+  document.querySelectorAll('.seg button').forEach(function(b){b.addEventListener('click',function(){
+    document.querySelectorAll('.seg button').forEach(function(x){x.setAttribute('aria-pressed',String(x===b));});
+    state.days=+b.dataset.days; state.shown=40; load();});});
+  $('rows').addEventListener('change',function(e){
+    var el=e.target; if(!el.classList.contains('status')) return;
+    var id=+el.dataset.id, v=el.value, lead=state.leads.find(function(l){return l.id===id;}), old=lead.status;
+    lead.status=v; el.dataset.v=v; render();
+    if(state.demo){toast('Atendimento marcado como "'+ST[v]+'"');return;}
+    sb.from('leads').update({status:v}).eq('id',id).then(function(r){
+      if(r.error){lead.status=old; render(); toast('Não salvou. Confira a conexão e tente de novo.');}
+      else toast('Atendimento marcado como "'+ST[v]+'"');});
+  });
+  $('client-pick').addEventListener('change',function(){state.client=state.clients.find(function(c){return c.id===this.value;},this); $('client-name').textContent=state.client.nome; load();});
+
+  /* ---------- login ---------- */
+  var forgot=false, recovering=false;
+  function netErr(err){return err&&(err.status===0||/fetch|network|Failed/i.test(err.message||''));}
+  function showLogin(msg,ok){$('app').hidden=true;$('login').hidden=false; var m=$('l-msg'); if(msg){m.textContent=msg;m.className='msg'+(ok?' ok':'');m.hidden=false;}else m.hidden=true;}
+  function startDemo(){state.demo=true; state.client={id:'demo',nome:'Tarzan Trip'}; $('client-name').textContent='Tarzan Trip'; $('client-pick').hidden=true; $('demo-band').hidden=false; $('logout').textContent='Sair do exemplo'; $('login').hidden=true; $('app').hidden=false; load();}
+  function startReal(){
+    $('demo-band').hidden=true; $('logout').textContent='Sair';
+    sb.from('clientes').select('id,nome').order('nome').then(function(r){
+      if(r.error||!r.data||!r.data.length){ showLogin('Sua conta ainda não está ligada a nenhum site. Fale com a Linxio.'); sb.auth.signOut(); return; }
+      state.clients=r.data; state.client=r.data[0]; $('client-name').textContent=state.client.nome;
+      var p=$('client-pick'); p.hidden=r.data.length<2; p.innerHTML=r.data.map(function(c){return '<option value="'+esc(c.id)+'">'+esc(c.nome)+'</option>';}).join('');
+      $('login').hidden=true; $('app').hidden=false; load();
+    });
+  }
+  $('login-form').addEventListener('submit',function(e){
+    e.preventDefault(); if(!sb){showLogin('Não consegui conectar. Confira a internet e recarregue a página.');return;}
+    if(recovering){
+      sb.auth.updateUser({password:$('l-pass').value}).then(function(r){ if(r.error) showLogin('A senha precisa ter pelo menos 6 caracteres.'); else { recovering=false; startReal(); } });
+      return;
+    }
+    var email=$('l-email').value.trim(), pass=$('l-pass').value, btn=$('l-submit');
+    if(!email){showLogin('Coloque seu e-mail.');return;}
+    btn.disabled=true;
+    if(forgot){
+      sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname}).then(function(r){btn.disabled=false;
+        showLogin(r.error?'Não deu pra enviar agora. Tente de novo em alguns minutos.':'Se esse e-mail tiver acesso, chega um link pra criar uma nova senha.',!r.error);});
+      return;
+    }
+    sb.auth.signInWithPassword({email:email,password:pass}).then(function(r){btn.disabled=false;
+      if(r.error) showLogin(netErr(r.error)?'Não consegui conectar. Confira a internet e tente de novo.':'E-mail ou senha incorretos.'); else startReal();});
+  });
+  $('l-forgot').addEventListener('click',function(){forgot=!forgot; $('pass-field').hidden=forgot; $('l-submit').textContent=forgot?'Enviar link':'Entrar'; this.textContent=forgot?'Voltar pro login':'Esqueci a senha'; $('l-msg').hidden=true;});
+  $('l-demo').addEventListener('click',startDemo);
+  $('exit-demo').addEventListener('click',function(){state.demo=false;showLogin();});
+  $('logout').addEventListener('click',function(){ if(state.demo){state.demo=false;showLogin();return;} sb.auth.signOut().then(function(){showLogin('Você saiu.',true);}); });
+
+  /* Link de "nova senha" vindo do e-mail */
+  if(sb){
+    sb.auth.onAuthStateChange(function(ev){
+      if(ev==='PASSWORD_RECOVERY'){
+        var form=$('login-form'); forgot=false; recovering=true;
+        form.querySelector('h1').textContent='Crie sua nova senha'; $('pass-field').hidden=false; $('l-email').closest('.field').hidden=true;
+        $('l-pass').setAttribute('autocomplete','new-password'); $('l-submit').textContent='Salvar senha'; $('l-forgot').hidden=true; showLogin();
+      }
+    });
+  }
+
+  /* ---------- início ---------- */
+  var wantDemo=location.hash==='#exemplo';
+  if(!sb||wantDemo){ startDemo(); }
+  else sb.auth.getSession().then(function(r){ if(r.data&&r.data.session) startReal(); else showLogin(); }).catch(function(){ startDemo(); });
+})();
+</script>
+
+</html>
