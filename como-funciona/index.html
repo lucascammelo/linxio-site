@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%231F6FB2%22/%3E%3Ctext x=%2216%22 y=%2223%22 font-family=%22Arial%22 font-weight=%22700%22 font-size=%2219%22 text-anchor=%22middle%22 fill=%22white%22%3EL%3C/text%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="canonical" href="https://linxio.com.br/como-funciona">
+<meta name="description" content="O que você recebe, o caminho do seu cliente até o WhatsApp e como a Linxio trabalha.">
+<title>Sua página com a Linxio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Gochi+Hand&display=swap">
+<style>
+/* Layout: uma folha de quadro branco rolando de cima pra baixo; cada bloco é um "post-it" desenhado à mão, ligado por setas. */
+:root{
+  --paper:#FFFFFF; --ink:#1E1E1E; --soft:#5C5F66; --grid:#EEF0F3;
+  --blue:#1971C2; --blue-f:#A5D8FF; --green:#2F9E44; --green-f:#B2F2BB;
+  --orange:#E8590C; --orange-f:#FFD8A8; --yellow-f:#FFEC99; --red:#E03131; --red-f:#FFC9C9; --violet:#6741D9; --violet-f:#D0BFFF;
+  --hand:"Kalam","Comic Sans MS","Segoe Print",cursive;
+  --title:"Gochi Hand","Kalam","Comic Sans MS",cursive;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#121212; --ink:#E3E3E3; --soft:#A3A8B0; --grid:#1D1F23;
+  --blue:#74C0FC; --blue-f:#1C3A57; --green:#69DB7C; --green-f:#1E3B26; --orange:#FFA94D; --orange-f:#4A2E12;
+  --yellow-f:#4A4116; --red:#FF8787; --red-f:#4A1F1F; --violet:#B197FC; --violet-f:#2E2550; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#121212; --ink:#E3E3E3; --soft:#A3A8B0; --grid:#1D1F23;
+  --blue:#74C0FC; --blue-f:#1C3A57; --green:#69DB7C; --green-f:#1E3B26; --orange:#FFA94D; --orange-f:#4A2E12;
+  --yellow-f:#4A4116; --red:#FF8787; --red-f:#4A1F1F; --violet:#B197FC; --violet-f:#2E2550; color-scheme:dark}
+*{box-sizing:border-box}
+body{background-color:var(--paper);background-image:radial-gradient(var(--grid) 1.2px,transparent 1.2px);background-size:22px 22px;color:var(--ink);font:18px/1.45 var(--hand)}
+.sheet{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 80px;display:grid;gap:64px}
+h1,h2{font-family:var(--title);font-weight:400;margin:0;line-height:1.05;text-wrap:balance}
+h1{font-size:clamp(44px,7vw,76px)}
+h2{font-size:clamp(32px,4.4vw,46px);display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+h2 small{font-family:var(--hand);font-size:18px;color:var(--soft)}
+p{margin:0}
+.lead{font-size:clamp(19px,2vw,22px);color:var(--soft);max-width:60ch;margin-top:10px}
+.under{position:relative;display:inline-block}
+.under svg{position:absolute;left:-4px;right:-4px;bottom:-10px;width:calc(100% + 8px);height:16px;overflow:visible}
+section{display:grid;gap:24px}
+
+/* post-it desenhado: a borda é feita pelo rough.js num svg atrás do conteúdo */
+.note{position:relative;padding:20px 22px;min-width:0;z-index:0}
+.note>svg.rough{position:absolute;inset:-4px;width:calc(100% + 8px);height:calc(100% + 8px);z-index:-1;overflow:visible;pointer-events:none}
+.note h3{font-family:var(--title);font-weight:400;font-size:28px;margin:0 0 6px;line-height:1.1}
+.note ul{margin:6px 0 0;padding-left:20px}
+.note li{margin:3px 0}
+.note .big{font-family:var(--title);font-size:46px;line-height:1}
+.note .tag{display:inline-block;font-size:15px;padding:0 8px;border:1.5px solid currentColor;border-radius:999px;transform:rotate(-2deg)}
+.note.small{padding:14px 16px;font-size:16.5px}
+.note.small h3{font-size:22px;margin-bottom:2px}
+.muted{color:var(--soft)}
+.no-rough .note{border:2px solid var(--ink);border-radius:10px}
+
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:36px}
+  .two.prod{grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr)}
+.plus{display:grid;place-items:center;font-family:var(--title);font-size:48px;color:var(--soft)}
+
+/* fluxo */
+.flow-top{display:grid;grid-template-columns:minmax(0,1fr) 70px minmax(0,1fr) 70px minmax(0,1fr);align-items:center;gap:6px}
+.arrow{position:relative;min-height:56px;min-width:40px}
+.arrow svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.arrow span{position:absolute;left:50%;top:-6px;transform:translateX(-50%);font-size:14px;color:var(--soft);white-space:nowrap}
+.fan{height:90px;position:relative}
+.fan svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.fan-note{display:none;font-family:var(--title);font-size:22px;text-align:center}
+.lanes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;align-items:start}
+.lane{display:grid;gap:4px;justify-items:stretch}
+.lane .arrow{height:50px;min-height:50px}
+.lane-label{font-family:var(--title);font-size:22px;text-align:center;margin-bottom:6px}
+.lane-label b{font-weight:400;padding:0 8px}
+
+/* jornada */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:30px 34px;counter-reset:s}
+.steps .note{counter-increment:s}
+.steps .note h3::before{content:counter(s) ". ";color:var(--soft)}
+.callout{display:flex;gap:14px;align-items:flex-start}
+.callout .bang{font-family:var(--title);font-size:44px;line-height:.9;color:var(--red)}
+.math{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px}
+.math .big{font-size:40px}
+.foot{font-size:15px;color:var(--soft);text-align:center}
+
+@media (max-width:900px){
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  body{font-size:17px}
+  .sheet{gap:52px;padding-block:28px 60px}
+  .two,.two.prod,.math{grid-template-columns:minmax(0,1fr);gap:28px}
+  .plus{font-size:40px;margin:-10px 0}
+  .flow-top{grid-template-columns:minmax(0,1fr);gap:4px}
+  .flow-top .arrow{height:48px}
+  .fan{display:none}
+  .fan-note{display:block;margin-top:6px}
+  .lanes{grid-template-columns:minmax(0,1fr);gap:36px}
+  .steps{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:no-preference){
+  .note{transition:transform .2s}
+  .note:hover{transform:rotate(-.6deg) translateY(-2px)}
+}
+</style>
+
+<style>
+.checklist{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:8px}
+.checklist li{display:flex;gap:10px;align-items:flex-start}
+.checklist li::before{content:"";flex:none;width:18px;height:18px;margin-top:4px;border:2px solid var(--ink);border-radius:4px;transform:rotate(-3deg)}
+.cta{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
+.cta a{font-family:var(--title);font-size:26px;color:var(--ink);text-decoration:none;padding:6px 20px;border:2px solid var(--ink);border-radius:12px;transform:rotate(-1deg);display:inline-block;background:var(--yellow-f)}
+.cta a:hover{transform:rotate(1deg)}
+</style>
+
+<main class="sheet" id="sheet">
+  <header>
+    <h1>Como funciona a sua <span class="under" data-under="orange">página</span></h1>
+    <p class="lead">Tudo o que você recebe, o caminho que o seu cliente faz até chegar no seu WhatsApp e como a gente trabalha junto, do primeiro papo à página no ar.</p>
+  </header>
+
+  <!-- 1. o que você recebe -->
+  <section aria-labelledby="h-prod">
+    <h2 id="h-prod">1. O que você recebe <small>uma página, e um plano opcional</small></h2>
+    <div class="two prod">
+      <div class="note" data-stroke="blue" data-fill="blue-f" data-seed="3">
+        <span class="tag" style="color:var(--blue)">paga uma vez</span>
+        <h3 style="margin-top:8px">Sua landing page</h3>
+        <div class="big">R$ 1.497</div>
+        <ul>
+          <li>Pronta em <b>10 dias úteis</b>, com 2 rodadas de ajuste</li>
+          <li>Design feito pro seu negócio, no celular e no computador</li>
+          <li>Textos organizados pra vender</li>
+          <li>Formulário que manda o cliente direto pro seu WhatsApp, com a mensagem pronta</li>
+          <li>Você sabe de qual post, anúncio ou link veio cada cliente</li>
+          <li>Pronta pra aparecer no Google</li>
+        </ul>
+        <p class="muted" style="margin-top:8px">A página é sua. O domínio fica no seu nome.</p>
+      </div>
+      <div class="plus" aria-hidden="true">+</div>
+      <div class="note" data-stroke="green" data-fill="green-f" data-seed="7">
+        <span class="tag" style="color:var(--green)">opcional, sem fidelidade</span>
+        <h3 style="margin-top:8px">Plano mensal</h3>
+        <div class="big">R$ 197<span style="font-size:24px">/mês</span></div>
+        <ul>
+          <li>Painel com todos os seus contatos, com login só seu</li>
+          <li>Aviso no seu WhatsApp a cada contato novo</li>
+          <li>Aviso de quem deixou o número e não chamou, pra você não perder ninguém</li>
+          <li>1 alteração por mês (texto, foto, preço)</li>
+          <li>Site acompanhado de perto</li>
+        </ul>
+        <p class="muted" style="margin-top:8px">Se cancelar, a página continua no ar.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. caminho do cliente -->
+  <section aria-labelledby="h-flow">
+    <h2 id="h-flow">2. O caminho do seu cliente <small>do post até a conversa com você</small></h2>
+    <div class="flow-top">
+      <div class="note small" data-stroke="violet" data-fill="violet-f" data-seed="11">
+        <h3>Vê você</h3>
+        <p>No seu Instagram, num anúncio, no Google ou num link que alguém mandou.</p>
+      </div>
+      <div class="arrow" data-seed="12"></div>
+      <div class="note small" data-stroke="blue" data-fill="blue-f" data-seed="13">
+        <h3>Abre sua página</h3>
+        <p>Entende o que você faz, vê fotos, preços e depoimentos.</p>
+      </div>
+      <div class="arrow" data-seed="14"></div>
+      <div class="note small" data-stroke="orange" data-fill="yellow-f" data-seed="15">
+        <h3>Deixa o contato</h3>
+        <p>Nome, WhatsApp e o que quer, em poucos segundos.</p>
+      </div>
+    </div>
+    <div class="fan" data-seed="16" aria-hidden="true"></div>
+    <p class="fan-note">Depois disso, acontecem três coisas:</p>
+    <div class="lanes">
+      <div class="lane">
+        <div class="lane-label"><b style="color:var(--blue)">sempre</b></div>
+        <div class="note small" data-stroke="green" data-fill="green-f" data-seed="21">
+          <h3>Chega no seu WhatsApp</h3>
+          <p>Com a mensagem pronta: "Oi! Vim pelo site e quero...". Você já sabe o que a pessoa quer.</p>
+        </div>
+        <div class="arrow" data-seed="22"></div>
+        <div class="note small" data-stroke="ink" data-fill="none" data-seed="23">
+          <h3>Você vende</h3>
+          <p>A conversa continua do jeito que você já atende hoje.</p>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-label"><b style="color:var(--green)">com o plano mensal</b></div>
+        <div class="note small" data-stroke="blue" data-fill="blue-f" data-seed="31">
+          <h3>Aparece no seu painel</h3>
+          <p>Nome, número, o que quer e de onde veio. Tudo guardado, nada se perde.</p>
+        </div>
+        <div class="arrow" data-seed="32"></div>
+        <div class="note small" data-stroke="green" data-fill="green-f" data-seed="33">
+          <h3>Você acompanha</h3>
+          <p>Marca quem está em conversa e quem fechou, e vê o que mais traz cliente.</p>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-label"><b style="color:var(--green)">com o plano mensal</b></div>
+        <div class="note small" data-stroke="orange" data-fill="orange-f" data-seed="41">
+          <h3>Aviso na hora</h3>
+          <p>Seu celular avisa: "Lead novo", com os dados da pessoa.</p>
+        </div>
+        <div class="arrow" data-seed="42"></div>
+        <div class="note small" data-stroke="red" data-fill="red-f" data-seed="43">
+          <h3>Quem desistiu</h3>
+          <p>Se a pessoa deixou o número e não mandou mensagem, você recebe outro aviso pra chamar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. como trabalhamos -->
+  <section aria-labelledby="h-steps">
+    <h2 id="h-steps">3. Como a gente trabalha <small>10 dias úteis a partir do passo 2</small></h2>
+    <div class="steps">
+      <div class="note small" data-stroke="violet" data-fill="violet-f" data-seed="51"><h3>Conversa</h3><p>Entendo seu negócio, seus clientes e o que você quer que a página faça.</p></div>
+      <div class="note small" data-stroke="blue" data-fill="blue-f" data-seed="52"><h3>Você me envia o material</h3><p>Textos, fotos, serviços e preços. A lista do que mandar está logo abaixo.</p></div>
+      <div class="note small" data-stroke="blue" data-fill="blue-f" data-seed="53"><h3>Eu monto a página</h3><p>Organizo os textos, faço o design e deixo tudo pronto no celular e no computador.</p></div>
+      <div class="note small" data-stroke="orange" data-fill="yellow-f" data-seed="54"><h3>Você revisa</h3><p>Duas rodadas pra pedir ajustes: trocar foto, mudar texto, mexer na ordem.</p></div>
+      <div class="note small" data-stroke="orange" data-fill="yellow-f" data-seed="55"><h3>No ar</h3><p>Publico no seu domínio e testo o formulário com você.</p></div>
+      <div class="note small" data-stroke="green" data-fill="green-f" data-seed="56"><h3>Você recebe</h3><p>O link da página e os links prontos pra bio, stories e anúncios, pra saber o que traz cliente.</p></div>
+      <div class="note small" data-stroke="green" data-fill="green-f" data-seed="57"><h3>Se tiver o plano</h3><p>Seu login do painel e os avisos ligados no seu WhatsApp.</p></div>
+      <div class="note small" data-stroke="green" data-fill="green-f" data-seed="58"><h3>Daqui pra frente</h3><p>Precisa mudar algo? Com o plano, 1 alteração por mês está incluída.</p></div>
+    </div>
+  </section>
+
+  <!-- 4. o que preciso -->
+  <section aria-labelledby="h-need">
+    <h2 id="h-need">4. O que eu preciso de você <small>quanto antes chegar, antes fica pronta</small></h2>
+    <div class="two">
+      <div class="note" data-stroke="violet" data-fill="none" data-seed="61">
+        <h3>Sobre o negócio</h3>
+        <ul class="checklist">
+          <li>O que você vende e pra quem</li>
+          <li>Lista de serviços ou produtos, com preços (se quiser mostrar)</li>
+          <li>O que te diferencia dos concorrentes</li>
+          <li>Perguntas que os clientes mais fazem</li>
+          <li>O número de WhatsApp que vai receber os contatos</li>
+        </ul>
+      </div>
+      <div class="note" data-stroke="orange" data-fill="none" data-seed="62">
+        <h3>Material</h3>
+        <ul class="checklist">
+          <li>Sua logo (se tiver)</li>
+          <li>Fotos boas do seu trabalho, do lugar ou da equipe</li>
+          <li>Prints de depoimentos de clientes</li>
+          <li>Seu Instagram</li>
+          <li>Domínio: se ainda não tiver, eu te ajudo a registrar no seu nome</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. quem paga o quê -->
+  <section aria-labelledby="h-cost">
+    <h2 id="h-cost">5. Quem paga o quê <small>sem surpresa depois</small></h2>
+    <div class="two">
+      <div class="note" data-stroke="blue" data-fill="none" data-seed="71">
+        <h3>Você paga</h3>
+        <ul>
+          <li>A página: R$ 1.497, uma vez</li>
+          <li>O domínio (o endereço do site), direto pro provedor, no seu nome</li>
+          <li>A hospedagem, se tiver custo, também no seu nome</li>
+          <li>O plano mensal, só se quiser</li>
+        </ul>
+      </div>
+      <div class="note" data-stroke="green" data-fill="none" data-seed="72">
+        <h3>Já está incluso</h3>
+        <ul>
+          <li>Design, textos e montagem da página</li>
+          <li>Configuração do domínio e da publicação</li>
+          <li>Pixel da Meta e Google Analytics</li>
+          <li>Os links rastreáveis pra divulgar</li>
+          <li>2 rodadas de ajuste</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note callout" data-stroke="ink" data-fill="none" data-seed="73">
+      <span class="bang" aria-hidden="true" style="color:var(--blue)">?</span>
+      <p><b>O que não está incluso:</b> gestão de anúncios e criação de posts pras redes sociais. A página sai pronta pra receber anúncio, com o rastreio configurado, então quem cuida dos seus anúncios vai ter os dados certos.</p>
+    </div>
+  </section>
+
+  <section aria-label="Contato">
+    <div class="cta">
+      <a href="https://linxio.com.br/#contato">Quero minha página</a>
+      <span class="muted">Ver exemplo real: <a href="https://tarzantrip.com.br" style="font-family:var(--hand);font-size:18px;border:0;background:none;padding:0;transform:none;text-decoration:underline">tarzantrip.com.br</a></span>
+    </div>
+  </section>
+
+  <p class="foot">Linxio · landing pages que levam o cliente pro seu WhatsApp · linxio.com.br</p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+<script>
+(function(){
+  var sheet=document.getElementById('sheet');
+  if(!window.rough){ document.documentElement.classList.add('no-rough'); return; }
+  var NS='http://www.w3.org/2000/svg';
+  function tok(n){ return getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim(); }
+  function svgIn(el,cls){ var s=el.querySelector(':scope>svg.'+cls); if(!s){ s=document.createElementNS(NS,'svg'); s.setAttribute('class',cls); s.setAttribute('aria-hidden','true'); el.insertBefore(s,el.firstChild); } while(s.firstChild) s.removeChild(s.firstChild); return s; }
+  function arrowHead(rc,x1,y1,x2,y2,o){ var a=Math.atan2(y2-y1,x2-x1), L=13, s=0.5; return [rc.line(x2,y2,x2-L*Math.cos(a-s),y2-L*Math.sin(a-s),o), rc.line(x2,y2,x2-L*Math.cos(a+s),y2-L*Math.sin(a+s),o)]; }
+
+  function draw(){
+    var ink=tok('ink');
+    document.querySelectorAll('.note').forEach(function(n){
+      var s=svgIn(n,'rough'), w=n.offsetWidth+8, h=n.offsetHeight+8, rc=rough.svg(s), stroke=tok(n.dataset.stroke||'ink'), fill=n.dataset.fill&&n.dataset.fill!=='none'?tok(n.dataset.fill):undefined;
+      s.setAttribute('viewBox','0 0 '+w+' '+h);
+      s.appendChild(rc.rectangle(4,4,w-8,h-8,{stroke:stroke,strokeWidth:2,roughness:1.4,bowing:1.2,fill:fill,fillStyle:'hachure',hachureGap:12,fillWeight:1,hachureAngle:-41,seed:+n.dataset.seed||1}));
+    });
+    document.querySelectorAll('.arrow').forEach(function(a){
+      var s=svgIn(a,'r'), w=a.offsetWidth, h=a.offsetHeight, rc=rough.svg(s), o={stroke:ink,strokeWidth:2,roughness:1.2,seed:+a.dataset.seed||1};
+      s.setAttribute('viewBox','0 0 '+w+' '+h);
+      var prev=a.previousElementSibling, down=!prev||prev.getBoundingClientRect().bottom<=a.getBoundingClientRect().top+2;
+      var x1,y1,x2,y2; if(!down){ x1=4;y1=h/2;x2=w-6;y2=h/2; } else { x1=w/2;y1=4;x2=w/2;y2=h-6; }
+      s.appendChild(rc.line(x1,y1,x2,y2,o)); arrowHead(rc,x1,y1,x2,y2,o).forEach(function(p){s.appendChild(p);});
+    });
+    var fan=document.querySelector('.fan');
+    if(fan&&fan.offsetWidth){
+      var s=svgIn(fan,'r'), w=fan.offsetWidth, h=fan.offsetHeight, rc=rough.svg(s), o={stroke:ink,strokeWidth:2,roughness:1.3,seed:16};
+      s.setAttribute('viewBox','0 0 '+w+' '+h);
+      var from=document.querySelector('.flow-top .note:last-of-type'), fb=from.getBoundingClientRect(), fr=fan.getBoundingClientRect();
+      var sx=fb.left+fb.width/2-fr.left, lanes=document.querySelectorAll('.lane');
+      lanes.forEach(function(l){ var lb=l.getBoundingClientRect(), ex=lb.left+lb.width/2-fr.left;
+        var mid=h*0.45, p='M '+sx+' 4 C '+sx+' '+mid+', '+ex+' '+(h-mid)+', '+ex+' '+(h-8);
+        s.appendChild(rc.path(p,o)); arrowHead(rc,ex,h-30,ex,h-6,o).forEach(function(q){s.appendChild(q);}); });
+    }
+    document.querySelectorAll('.under').forEach(function(u){
+      var s=svgIn(u,'u'), w=u.offsetWidth+8, rc=rough.svg(s); s.setAttribute('viewBox','0 0 '+w+' 16');
+      s.appendChild(rc.curve([[2,10],[w*0.35,5],[w*0.7,11],[w-2,6]],{stroke:tok(u.dataset.under||'orange'),strokeWidth:4,roughness:1.5,seed:5}));
+    });
+  }
+  var t; function redraw(){ clearTimeout(t); t=setTimeout(draw,120); }
+  window.addEventListener('resize',redraw);
+  try{ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',redraw); }catch(e){}
+  new MutationObserver(redraw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(draw); else draw();
+  draw();
+})();
+</script>
+
+</html>
