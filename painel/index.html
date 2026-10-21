@@ -106,9 +106,18 @@ main{display:grid;gap:20px;padding-block:24px 64px}
 .legend{display:flex;gap:14px;font-size:13px;color:var(--muted);flex-wrap:wrap}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
-#chart{width:100%;height:auto;display:block}
+.chart-box{position:relative}
+#chart{width:100%;height:auto;display:block;touch-action:pan-y}
 #chart text{fill:var(--muted);font-family:var(--f-mono);font-size:11px}
+#chart text.tot{fill:var(--ink);font-weight:500;font-size:11.5px}
 #chart .grid{stroke:var(--line);stroke-width:1}
+#chart .hit{fill:transparent;cursor:pointer}
+#chart .hit.on{fill:var(--accent-soft);opacity:.55}
+.tip{position:absolute;z-index:3;top:4px;pointer-events:none;background:var(--ink);color:var(--bg);border-radius:8px;padding:9px 12px;font-size:13px;line-height:1.45;white-space:nowrap;box-shadow:0 10px 30px -10px rgba(0,0,0,.4)}
+.tip b{display:block;font-size:13.5px;margin-bottom:2px}
+.tip i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}
+.chart-sum{display:flex;gap:6px 18px;flex-wrap:wrap;margin-top:12px;font-size:14px;color:var(--muted)}
+.chart-sum b{color:var(--ink);font-variant-numeric:tabular-nums}
 .hbars{display:grid;gap:12px}
 .hbar{display:grid;gap:5px}
 .hbar .row{display:flex;justify-content:space-between;gap:8px;font-size:14px}
@@ -128,6 +137,7 @@ td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
 tr:last-child td{border-bottom:0}
 td.nm b{display:block}
 td.nm span{color:var(--muted);font-size:13px}
+td.c-src,td.c-when{white-space:nowrap}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
 .chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
 .chip.sent{background:var(--accent-soft);color:var(--accent)}
@@ -224,7 +234,11 @@ td.nm span{color:var(--muted);font-size:13px}
           <div><h2 id="h-chart">Leads por dia</h2><p class="hint" id="chart-hint">Últimos 30 dias</p></div>
           <div class="legend"><span><i style="background:var(--bar-a)"></i>Mandaram mensagem</span><span><i style="background:var(--bar-b)"></i>Não mandaram</span></div>
         </div>
-        <svg id="chart" viewBox="0 0 640 240" role="img" aria-label="Gráfico de leads por dia"></svg>
+        <div class="chart-box" id="chart-box">
+          <svg id="chart" viewBox="0 0 640 250" role="img" aria-label="Gráfico de leads por dia"></svg>
+          <div class="tip" id="tip" hidden></div>
+        </div>
+        <p class="chart-sum" id="chart-sum"></p>
       </section>
       <section class="panel split" aria-label="Origem e interesse">
         <div><h3>De onde vieram</h3><div class="hbars" id="src-bars"></div></div>
@@ -351,24 +365,64 @@ td.nm span{color:var(--muted);font-size:13px}
         '<a class="btn btn-wa" href="'+esc(waLink(l))+'" target="_blank" rel="noopener">Chamar no WhatsApp</a></div>';
     }).join(''):'<p class="empty">Ninguém pendente. Todo mundo que deixou o número já mandou mensagem ou foi atendido.</p>';
   }
+  var WD=['dom','seg','ter','qua','qui','sex','sáb'];
+  var chartBuckets=[];
   function renderChart(){
-    var days=state.days, W=640, H=240, pl=32, pr=8, pt=12, pb=28, iw=W-pl-pr, ih=H-pt-pb;
-    var keys=[], map={};
-    for(var i=days-1;i>=0;i--){var k=dayKey(new Date(Date.now()-i*864e5)); keys.push(k); map[k]={a:0,b:0};}
-    state.leads.forEach(function(l){var k=dayKey(new Date(l.criado_em)); if(map[k]) map[k][l.etapa==='abriu_whatsapp'?'a':'b']++;});
-    var max=0; keys.forEach(function(k){max=Math.max(max,map[k].a+map[k].b);});
-    var step=max<=4?1:max<=10?2:max<=20?5:10, top=Math.max(step*Math.ceil(Math.max(max,1)/step),step);
-    var y=function(v){return pt+ih-(v/top)*ih;}, bw=iw/days, gap=Math.max(1,bw*.22), s='';
+    var days=state.days, weekly=days>30, W=Math.max(300,Math.min(760,Math.round($('chart-box').clientWidth)||640)), H=W<480?220:250, pl=30, pr=6, pt=22, pb=30, iw=W-pl-pr, ih=H-pt-pb;
+    /* 7 e 30 dias: uma barra por dia. 90 dias: uma barra por semana, pra continuar legível */
+    var B=[], idx={};
+    for(var i=days-1;i>=0;i--){
+      var d=new Date(Date.now()-i*864e5), k=dayKey(d);
+      if(weekly){
+        var dow=(new Date(k+'T12:00:00').getDay()+6)%7, ws=dayKey(new Date(new Date(k+'T12:00:00').getTime()-dow*864e5));
+        if(idx[ws]==null){ idx[ws]=B.length; B.push({start:ws,end:k,a:0,b:0}); } else B[idx[ws]].end=k;
+        idx[k]=idx[ws];
+      } else { idx[k]=B.length; B.push({start:k,end:k,a:0,b:0}); }
+    }
+    state.leads.forEach(function(l){var j=idx[dayKey(new Date(l.criado_em))]; if(j!=null) B[j][l.etapa==='abriu_whatsapp'?'a':'b']++;});
+    var max=0; B.forEach(function(x){max=Math.max(max,x.a+x.b);});
+    var step=max<=4?1:max<=10?2:max<=20?5:max<=50?10:20, top=Math.max(step*Math.ceil(Math.max(max,1)/step),step);
+    var y=function(v){return pt+ih-(v/top)*ih;}, bw=iw/B.length, gap=Math.max(1.5,bw*.24), s='';
     for(var v=0;v<=top;v+=step){ s+='<line class="grid" x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y(v)+'" y2="'+y(v)+'"/><text x="'+(pl-6)+'" y="'+(y(v)+4)+'" text-anchor="end">'+v+'</text>'; }
-    var every=days<=7?1:days<=30?5:15;
-    keys.forEach(function(k,i){
-      var x=pl+i*bw+gap/2, w=Math.max(1,bw-gap), a=map[k].a, b=map[k].b;
-      if(a) s+='<rect x="'+x+'" y="'+y(a)+'" width="'+w+'" height="'+(y(0)-y(a))+'" rx="1.5" fill="var(--bar-a)"><title>'+k.split('-').reverse().slice(0,2).join('/')+': '+a+' mandaram mensagem</title></rect>';
-      if(b) s+='<rect x="'+x+'" y="'+y(a+b)+'" width="'+w+'" height="'+(y(a)-y(a+b))+'" rx="1.5" fill="var(--bar-b)"><title>'+k.split('-').reverse().slice(0,2).join('/')+': '+b+' não mandaram</title></rect>';
-      if((days-1-i)%every===0) s+='<text x="'+(x+w/2)+'" y="'+(H-8)+'" text-anchor="middle">'+k.slice(8,10)+'/'+k.slice(5,7)+'</text>';
+    var every=weekly?(W<480?3:2):B.length<=7?1:(W<480?7:5);
+    B.forEach(function(x,i){
+      var bx=pl+i*bw, cx=bx+gap/2, w=Math.max(1,bw-gap), t=x.a+x.b;
+      s+='<rect class="hit" data-i="'+i+'" x="'+bx+'" y="'+pt+'" width="'+bw+'" height="'+ih+'"/>';
+      if(x.a) s+='<rect x="'+cx+'" y="'+y(x.a)+'" width="'+w+'" height="'+(y(0)-y(x.a))+'" rx="1.5" fill="var(--bar-a)" pointer-events="none"/>';
+      if(x.b) s+='<rect x="'+cx+'" y="'+y(t)+'" width="'+w+'" height="'+(y(x.a)-y(t))+'" rx="1.5" fill="var(--bar-b)" pointer-events="none"/>';
+      if(t) s+='<text class="tot" x="'+(cx+w/2)+'" y="'+(y(t)-5)+'" text-anchor="middle" pointer-events="none">'+t+'</text>';
+      if((B.length-1-i)%every===0) s+='<text x="'+(cx+w/2)+'" y="'+(H-10)+'" text-anchor="middle" pointer-events="none">'+x.start.slice(8,10)+'/'+x.start.slice(5,7)+'</text>';
     });
-    $('chart').innerHTML=s; $('chart-hint').textContent='Últimos '+days+' dias';
+    chartBuckets=B;
+    $('chart').setAttribute('viewBox','0 0 '+W+' '+H); $('chart').innerHTML=s; $('tip').hidden=true;
+    $('h-chart').textContent=weekly?'Leads por semana':'Leads por dia';
+    $('chart').setAttribute('aria-label',weekly?'Gráfico de leads por semana':'Gráfico de leads por dia');
+    $('chart-hint').textContent='Últimos '+days+' dias'+(weekly?', somados por semana':'');
+    var ta=0,tb=0,best=null; B.forEach(function(x){ta+=x.a;tb+=x.b; if(!best||x.a+x.b>best.a+best.b) best=x;});
+    $('chart-sum').innerHTML=(ta+tb)?'<span>Média de <b>'+((ta+tb)/B.length).toFixed(1).replace('.',',')+'</b> leads por '+(weekly?'semana':'dia')+'</span><span>'+(weekly?'Melhor semana':'Melhor dia')+': <b>'+bucketLabel(best)+'</b>, com <b>'+(best.a+best.b)+'</b></span>':'';
   }
+  function bucketLabel(x){
+    var d=new Date(x.start+'T12:00:00'), f=x.start.slice(8,10)+'/'+x.start.slice(5,7);
+    if(x.start===x.end) return WD[d.getDay()]+', '+f;
+    return f+' a '+x.end.slice(8,10)+'/'+x.end.slice(5,7);
+  }
+  function showTip(i){
+    var x=chartBuckets[i]; if(!x) return;
+    document.querySelectorAll('#chart .hit').forEach(function(h){h.classList.toggle('on',+h.dataset.i===i);});
+    var t=x.a+x.b, tip=$('tip');
+    tip.innerHTML='<b>'+bucketLabel(x)+' · '+t+(t===1?' lead':' leads')+'</b><span><i style="background:var(--bar-a)"></i>'+x.a+' mandaram mensagem</span><br><span><i style="background:var(--bar-b)"></i>'+x.b+' não mandaram</span>';
+    var svg=$('chart'), box=svg.getBoundingClientRect(), hit=svg.querySelector('.hit[data-i="'+i+'"]').getBoundingClientRect();
+    tip.hidden=false;
+    /* a caixinha fica ao lado da barra, nunca em cima dela */
+    var left=hit.left-box.left, right=hit.right-box.left, tw=tip.offsetWidth, gapx=10, pos;
+    if(left-gapx-tw>=0 && (right+gapx+tw>box.width || left>box.width/2)) pos=left-gapx-tw; else if(right+gapx+tw<=box.width) pos=right+gapx; else pos=Math.max(0,Math.min(box.width-tw,left-tw/2));
+    tip.style.left=pos+'px';
+  }
+  function hideTip(){ $('tip').hidden=true; document.querySelectorAll('#chart .hit.on').forEach(function(h){h.classList.remove('on');}); }
+  var rz; window.addEventListener('resize',function(){ clearTimeout(rz); rz=setTimeout(function(){ if(!$('app').hidden) renderChart(); },150); });
+  $('chart').addEventListener('pointermove',function(e){ var h=e.target.closest&&e.target.closest('.hit'); if(h) showTip(+h.dataset.i); });
+  $('chart').addEventListener('pointerdown',function(e){ var h=e.target.closest&&e.target.closest('.hit'); if(h) showTip(+h.dataset.i); });
+  $('chart').addEventListener('pointerleave',function(e){ if(e.pointerType==='mouse') hideTip(); });
   function bars(el,counts){
     var arr=Object.keys(counts).map(function(k){return [k,counts[k]];}).sort(function(a,b){return b[1]-a[1];});
     var total=arr.reduce(function(s,a){return s+a[1];},0), max=arr.length?arr[0][1]:1;

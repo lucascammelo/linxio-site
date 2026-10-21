@@ -310,6 +310,13 @@ p{margin:0}
 .dash-bar i{width:10px;height:10px;border-radius:50%;background:var(--bg-3)}
 .dash-bar span{margin-left:10px;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
 .dash-frame img{display:block;width:100%;height:auto}
+.dash-tabs{display:flex;gap:4px;padding:8px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.dash-tabs::-webkit-scrollbar{display:none}
+.dash-tabs button{flex:none;font:inherit;font-size:14px;color:var(--muted);background:none;border:0;border-radius:8px;padding:8px 14px;cursor:pointer;white-space:nowrap}
+.dash-tabs button:hover{color:var(--fg)}
+.dash-tabs button[aria-selected="true"]{background:var(--bg-3);color:var(--fg);font-weight:600}
+.dash-frame [role="tabpanel"][hidden]{display:none}
+
 .dash-shot figcaption{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
 .dash-points{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 32px}
 .dash-points li{display:grid;gap:6px;min-width:0;padding-top:18px;border-top:1px solid var(--line)}
@@ -740,10 +747,23 @@ html.locked,html.locked body{overflow:hidden}
       <figure class="dash-shot" data-reveal>
         <div class="dash-frame">
           <div class="dash-bar" aria-hidden="true"><i></i><i></i><i></i><span>linxio.com.br/painel</span></div>
-          <picture>
-            <source media="(max-width:640px)" srcset="/img/foto-02.webp">
-            <img src="/img/foto-03.webp" width="1600" height="731" loading="lazy" alt="Painel de leads com o total do período, quem mandou e quem não mandou mensagem, reservas fechadas e a lista de quem chamar agora no WhatsApp">
-          </picture>
+          <div class="dash-tabs" role="tablist" aria-label="Telas do painel">
+            <button type="button" role="tab" id="dt-1" aria-controls="dp-1" aria-selected="true">Quem chamar agora</button>
+            <button type="button" role="tab" id="dt-2" aria-controls="dp-2" aria-selected="false" tabindex="-1">Números e origem</button>
+            <button type="button" role="tab" id="dt-3" aria-controls="dp-3" aria-selected="false" tabindex="-1">Todos os leads</button>
+          </div>
+          <div role="tabpanel" id="dp-1" aria-labelledby="dt-1">
+            <picture>
+              <source media="(max-width:640px)" srcset="/img/foto-02.webp">
+              <img src="/img/foto-03.webp" width="1600" height="731" loading="lazy" alt="Painel com o total de leads do período, quem mandou e quem não mandou mensagem, reservas fechadas e a lista de quem chamar agora no WhatsApp">
+            </picture>
+          </div>
+          <div role="tabpanel" id="dp-2" aria-labelledby="dt-2" hidden>
+            <img src="/img/foto-04.webp" width="1600" height="683" loading="lazy" alt="Gráfico de leads por dia com o total escrito em cada barra, e listas de onde vieram os contatos e do interesse de cada um">
+          </div>
+          <div role="tabpanel" id="dp-3" aria-labelledby="dt-3" hidden>
+            <img src="/img/foto-05.webp" width="1600" height="820" loading="lazy" alt="Tabela com todos os leads: quando chegou, nome, interesse, data desejada, origem, se mandou mensagem e o status do atendimento">
+          </div>
         </div>
         <figcaption>Dados ilustrativos. Faz parte do plano mensal.</figcaption>
       </figure>
@@ -971,6 +991,16 @@ html.locked,html.locked body{overflow:hidden}
   lm.addEventListener('click', function(e){ if(e.target===lm) closeLead(); });
   lm.addEventListener('keydown', function(e){ if(e.key==='Escape') closeLead(); });
   if(location.hash==='#contato') setTimeout(openLead, 300);
+  /* ===== abas das telas do painel ===== */
+  (function(){
+    var tabs=[].slice.call(document.querySelectorAll('.dash-tabs [role="tab"]'));
+    function sel(t){ tabs.forEach(function(x){ var on=x===t; x.setAttribute('aria-selected',on); x.tabIndex=on?0:-1; document.getElementById(x.getAttribute('aria-controls')).hidden=!on; }); }
+    tabs.forEach(function(t,i){
+      t.addEventListener('click',function(){ sel(t); });
+      t.addEventListener('keydown',function(e){ var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0; if(!d) return; e.preventDefault(); var n=tabs[(i+d+tabs.length)%tabs.length]; sel(n); n.focus(); });
+    });
+  })();
+
 
   document.querySelectorAll('[data-wa]').forEach(function(a){
     var key = a.getAttribute('data-wa');
