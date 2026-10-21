@@ -1,5 +1,12 @@
 {
   "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/clarinha",
+      "destination": "/?utm_source=clarinha&utm_medium=indicacao",
+      "permanent": false
+    }
+  ],
   "headers": [
     {
       "source": "/img/(.*)",

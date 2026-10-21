@@ -461,6 +461,11 @@ p{margin:0}
 @media (prefers-reduced-motion:reduce){
   .marquee-track,.grain,.caret{animation:none}
 }
+/* ===== indicação ===== */
+.indic{display:inline-flex;align-items:center;gap:10px;margin:14px 0 0;padding:9px 16px 9px 10px;border-radius:20px;background:var(--violet-soft);border:1px solid rgba(108,180,238,.35);font-size:15px;color:var(--fg);max-width:100%}
+.indic i{flex:none;width:26px;height:26px;border-radius:50%;background:var(--violet);color:var(--bg);display:grid;place-items:center;font-style:normal;font-weight:700;font-size:13px;font-family:var(--f-mono)}
+.indic b{font-weight:600}
+.lead-indic{margin:0;font-size:14px;color:var(--violet)}
 /* ===== formulário de contato (janela) ===== */
 .lead-modal{position:fixed;inset:0;z-index:120;display:grid;place-items:center;overflow-y:auto;
   padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
@@ -516,6 +521,7 @@ html.locked,html.locked body{overflow:hidden}
     <div class="wrap">
       <div>
         <span class="eyebrow">Landing pages</span>
+        <p class="indic" id="indic" hidden></p>
         <h1 id="hero-title">Páginas que levam o cliente direto pro seu <em>WhatsApp.</em></h1>
         <p class="hero-sub">Design sob medida, rastreio de cada anúncio e o contato caindo na hora no seu WhatsApp. Você sabe de onde veio cada cliente.</p>
         <div class="hero-cta">
@@ -927,6 +933,7 @@ html.locked,html.locked body{overflow:hidden}
     <button type="button" class="lead-close" id="lead-close" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <h2 id="lead-title">Vamos conversar sobre a sua página</h2>
     <p>Algumas perguntas rápidas e o WhatsApp abre com a mensagem pronta. Você confere antes de enviar.</p>
+    <p class="lead-indic" id="lead-indic" hidden></p>
     <div class="lf"><label for="lead-nome">Seu nome</label><input id="lead-nome" name="nome" autocomplete="name" placeholder="Como posso te chamar?"></div>
     <div class="lf"><label for="lead-whats">Seu WhatsApp</label><input id="lead-whats" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="(21) 99999-9999" aria-describedby="lead-err"></div>
     <div class="lf"><label for="lead-negocio">Qual é o seu negócio?</label><input id="lead-negocio" name="negocio" placeholder="Ex: passeios de barco, clínica, academia"></div>
@@ -971,6 +978,21 @@ html.locked,html.locked body{overflow:hidden}
     try{ fetch(LEADS_URL,{method:'POST',mode:'no-cors',keepalive:true,body:body}).catch(function(){}); }catch(e){}
   }
 
+  /* ===== indicação: quem chega pelo link de alguém vê o nome de quem indicou =====
+     Pra criar uma indicação nova: adicione o nome aqui e o atalho em vercel.json (linxio.com.br/nome). */
+  var INDICACOES = { clarinha: { nome: 'Clarinha', de: 'da Clarinha' } };
+  var INDIC = null;
+  if((UTM.utm_medium||'').toLowerCase()==='indicacao'){
+    var ks=(UTM.utm_source||'').toLowerCase();
+    INDIC = INDICACOES[ks] || (ks ? { nome: ks.charAt(0).toUpperCase()+ks.slice(1), de: 'de '+ks.charAt(0).toUpperCase()+ks.slice(1) } : null);
+  }
+  if(INDIC){
+    var ib=document.getElementById('indic');
+    ib.innerHTML='<i aria-hidden="true">'+INDIC.nome.charAt(0)+'</i><span>Você chegou por indicação '+INDIC.de.replace(/^(da|de|do) /,'$1 <b>')+'</b>. Que bom ter você aqui.</span>';
+    ib.hidden=false;
+    var li=document.getElementById('lead-indic'); li.textContent='Indicação '+INDIC.de+': a mensagem já vai avisando.'; li.hidden=false;
+  }
+
   /* ===== visitas e cliques (sem dados pessoais: só um código aleatório da visita) ===== */
   var SB_URL='https://ycbokvixbxkekcgnzhwl.supabase.co', SB_KEY='sb_publishable_cdAVG9aWMzd9QAZXe6HkZQ_qX3CV8Sb';
   var SID=''; try{ SID=sessionStorage.getItem('lx-sid')||''; if(!SID){ SID=Date.now().toString(36)+Math.random().toString(36).slice(2,10); sessionStorage.setItem('lx-sid',SID); } }catch(e){ SID=Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
@@ -998,7 +1020,7 @@ html.locked,html.locked body{overflow:hidden}
   }
   function leadMsg(){
     var n=val('lead-nome'), neg=val('lead-negocio'), site=val('lead-site');
-    var m='Oi Lucas! '+(n?'Sou '+n+'. ':'')+'Vim pelo site da Linxio e quero uma landing page';
+    var m='Oi Lucas! '+(n?'Sou '+n+'. ':'')+(INDIC?'Vim por indicação '+INDIC.de+' e quero uma landing page':'Vim pelo site da Linxio e quero uma landing page');
     if(neg) m+=' pro meu negócio: '+neg;
     m+='. '+site+'.'+refTag();
     return 'https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(m);
