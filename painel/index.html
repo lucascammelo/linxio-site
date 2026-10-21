@@ -138,6 +138,7 @@ td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
 tr:last-child td{border-bottom:0}
 td.nm b{display:block}
 td.nm span{color:var(--muted);font-size:13px}
+.xtra{color:var(--muted);font-size:13px}
 td.c-src,td.c-when{white-space:nowrap}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
 .chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
@@ -377,7 +378,7 @@ td.c-src,td.c-when{white-space:nowrap}
     var lim=Date.now()-7*864e5, c=state.leads.filter(function(l){return l.etapa==='so_preencheu'&&l.status==='novo'&&new Date(l.criado_em)>=lim;}).slice(0,6);
     $('call-list').innerHTML=c.length?c.map(function(l){
       return '<div class="call"><div class="who"><b>'+esc(l.nome||'Sem nome')+'</b><span class="num">'+esc(phone(l.whatsapp))+'</span></div>'+
-        '<div class="what">'+esc(l.interesse||'')+(l.pessoas?' · '+l.pessoas+(l.pessoas==1?' pessoa':' pessoas'):'')+'</div>'+
+        '<div class="what">'+esc(l.interesse||'')+(extraTxt(l)?' · '+esc(extraTxt(l)):'')+(l.pessoas?' · '+l.pessoas+(l.pessoas==1?' pessoa':' pessoas'):'')+'</div>'+
         '<span class="ago">'+ago(l.criado_em)+'</span>'+
         '<a class="btn btn-wa" href="'+esc(waLink(l))+'" target="_blank" rel="noopener">Chamar no WhatsApp</a></div>';
     }).join(''):'<p class="empty">Ninguém pendente. Todo mundo que deixou o número já mandou mensagem ou foi atendido.</p>';
@@ -456,6 +457,10 @@ td.c-src,td.c-when{white-space:nowrap}
     state.leads.forEach(function(l){ var o=origin(l); s[o]=(s[o]||0)+1; var i=(l.interesse||'Não informado').replace(/\s*\(privativo\)/,''); it[i]=(it[i]||0)+1; });
     bars('src-bars',s); bars('int-bars',it);
   }
+  /* campos extras do formulário de cada nicho (convênio, horário, tem site...) */
+  function rotulo(k){ k=String(k).replace(/[_-]+/g,' ').trim(); return k.charAt(0).toUpperCase()+k.slice(1); }
+  function extraTxt(l){ var e=l.extra||{}; return Object.keys(e).filter(function(k){return e[k]!==''&&e[k]!=null;}).map(function(k){ return (k==='site'?'':rotulo(k)+': ')+e[k]; }).join(' · '); }
+  function extraHtml(l){ var t=extraTxt(l); return t?'<br><span class="xtra">'+esc(t)+'</span>':''; }
   var ST={novo:'Novo',em_conversa:'Em conversa',fechou:'Fechou',perdeu:'Perdeu'};
   function filtered(){
     var q=$('f-q').value.trim().toLowerCase(), qd=q.replace(/\D/g,''), e=$('f-etapa').value, st=$('f-status').value;
@@ -471,7 +476,7 @@ td.c-src,td.c-when{white-space:nowrap}
       var opts=Object.keys(ST).map(function(k){return '<option value="'+k+'"'+(k===l.status?' selected':'')+'>'+ST[k]+'</option>';}).join('');
       return '<tr><td class="c-when num">'+esc(when(l.criado_em))+'</td>'+
         '<td class="nm"><b>'+esc(l.nome||'Sem nome')+'</b><span class="num">'+esc(phone(l.whatsapp))+(l.idioma&&l.idioma!=='pt'?' · '+l.idioma.toUpperCase():'')+'</span></td>'+
-        '<td class="c-int">'+esc(l.interesse||'')+(l.extra&&l.extra.site?'<br><span style="color:var(--muted);font-size:13px">'+esc(l.extra.site)+'</span>':'')+'</td>'+
+        '<td class="c-int">'+esc(l.interesse||'')+extraHtml(l)+'</td>'+
         '<td class="num c-pes" data-l="'+(l.pessoas?(l.pessoas==1?'pessoa':'pessoas'):'')+'">'+(l.pessoas||'')+'</td>'+
         '<td class="num c-data" data-l="'+(l.data_desejada?'para':'')+'">'+esc(dateBR(l.data_desejada))+'</td>'+
         '<td class="c-src">'+esc(origin(l))+'</td>'+
