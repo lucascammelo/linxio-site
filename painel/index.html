@@ -263,7 +263,7 @@ td.c-src,td.c-when{white-space:nowrap}
       </div>
       <div class="funnel" id="funnel"></div>
       <div class="fsplit" id="fsplit">
-        <div><h3>Acessos por origem</h3><div class="hbars" id="visit-src"></div></div>
+        <div><h3>Visitas por origem</h3><div class="hbars" id="visit-src"></div></div>
         <div><h3>Botão mais clicado</h3><div class="hbars" id="click-bars"></div></div>
       </div>
     </section>
@@ -492,7 +492,7 @@ td.c-src,td.c-when{white-space:nowrap}
       $('fsplit').hidden=true; return;
     }
     $('fsplit').hidden=false;
-    var steps=[['Acessaram o site','pessoas diferentes',vis],['Clicaram num botão','de contato',cli],['Abriram o formulário','',frm],['Deixaram o WhatsApp','viraram lead',lead],['Mandaram mensagem','abriram o WhatsApp',sent]];
+    var steps=[['Visitas ao site','cada visita conta uma vez',vis],['Clicaram num botão','de contato',cli],['Abriram o formulário','',frm],['Deixaram o WhatsApp','viraram lead',lead],['Mandaram mensagem','abriram o WhatsApp',sent]];
     var top=Math.max(vis,1);
     $('funnel').innerHTML=steps.map(function(st,i){
       var prev=i?steps[i-1][2]:0, p=i?(prev?Math.round(st[2]/prev*100)+'% da etapa anterior':''):(st[2]+' no total');
