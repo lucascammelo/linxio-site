@@ -126,7 +126,18 @@ main{display:grid;gap:20px;padding-block:24px 64px}
 .hbar .track{height:8px;border-radius:4px;background:var(--sunken);overflow:hidden}
 .hbar .fill{height:100%;border-radius:4px;background:var(--accent)}
 .split{display:grid;gap:24px}
-.split h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:600}
+.funnel{display:grid;gap:10px}
+.fstep{display:grid;grid-template-columns:minmax(150px,220px) minmax(0,1fr) auto;gap:14px;align-items:center}
+.fstep .fl{font-size:14.5px}
+.fstep .fl small{display:block;color:var(--muted);font-size:12.5px}
+.fstep .ftrack{height:30px;border-radius:6px;background:var(--sunken);overflow:hidden}
+.fstep .ffill{height:100%;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:var(--surface);font-family:var(--f-mono);font-size:13px;font-weight:500;min-width:28px}
+.fstep:nth-child(n+4) .ffill{background:var(--good)}
+.fstep .fpct{font-family:var(--f-mono);font-size:13px;color:var(--muted);min-width:92px;text-align:right}
+.fsplit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.fnote{color:var(--muted);font-size:14px;margin:0}
+@media (max-width:700px){.fstep{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"l p" "t t";gap:4px 10px}.fstep .fl{grid-area:l}.fstep .fpct{grid-area:p;min-width:0}.fstep .ftrack{grid-area:t;height:24px}.fsplit{grid-template-columns:minmax(0,1fr)}}
+.split h3,.fsplit h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:600}
 
 .filters{display:flex;gap:8px;flex-wrap:wrap}
 .filters input,.filters select{border:1px solid var(--line);background:var(--sunken);border-radius:8px;padding:7px 10px;min-width:0}
@@ -246,6 +257,17 @@ td.c-src,td.c-when{white-space:nowrap}
       <div class="call-list" id="call-list"></div>
     </section>
 
+    <section class="panel" aria-labelledby="h-funil">
+      <div class="panel-head">
+        <div><h2 id="h-funil">Do acesso à conversa</h2><p class="hint">Quantas pessoas passaram por cada etapa no período, e quantas seguiram pra próxima.</p></div>
+      </div>
+      <div class="funnel" id="funnel"></div>
+      <div class="fsplit" id="fsplit">
+        <div><h3>Acessos por origem</h3><div class="hbars" id="visit-src"></div></div>
+        <div><h3>Botão mais clicado</h3><div class="hbars" id="click-bars"></div></div>
+      </div>
+    </section>
+
     <div class="grid2">
       <section class="panel" aria-labelledby="h-chart">
         <div class="panel-head">
@@ -355,11 +377,13 @@ td.c-src,td.c-when{white-space:nowrap}
 
   /* ---------- carregar ---------- */
   function load(){
-    if(state.demo){ var all=demoData(), since=Date.now()-state.days*864e5; state.leads=all.filter(function(l){return new Date(l.criado_em)>=since;}); render(); return Promise.resolve(); }
+    if(state.demo){ var all=demoData(), since=Date.now()-state.days*864e5; state.leads=all.filter(function(l){return new Date(l.criado_em)>=since;}); state.events=demoEvents(state.leads,state.days); render(); return Promise.resolve(); }
     var since=new Date(Date.now()-state.days*864e5).toISOString();
     return sb.from('leads').select('id,lead_id,criado_em,etapa,status,nome,whatsapp,interesse,pessoas,data_desejada,idioma,utm_source,utm_medium,utm_campaign,referrer,extra')
       .eq('cliente_id',state.client.id).gte('criado_em',since).order('criado_em',{ascending:false}).limit(2000)
-      .then(function(r){ if(r.error){toast('Não consegui carregar os leads. Atualize a página.'); return;} state.leads=r.data||[]; render(); });
+      .then(function(r){ if(r.error){toast('Não consegui carregar os leads. Atualize a página.'); return;} state.leads=r.data||[];
+        return sb.from('eventos').select('tipo,sessao,alvo,utm_source,utm_medium,referrer,criado_em').eq('cliente_id',state.client.id).gte('criado_em',since).limit(20000)
+          .then(function(e){ state.events=(e&&!e.error&&e.data)||[]; render(); }); });
   }
 
   /* ---------- render ---------- */
@@ -372,7 +396,7 @@ td.c-src,td.c-when{white-space:nowrap}
     $('k-sent').textContent=sent; $('k-sent-sub').textContent=pct(sent,total)+' dos leads';
     $('k-miss').textContent=miss; $('k-miss-sub').textContent=pct(miss,total)+' dos leads';
     $('k-won').textContent=won; $('k-won-sub').textContent=pct(won,total)+' viraram reserva';
-    renderCall(); renderChart(); renderBars(); renderTable();
+    renderCall(); renderFunnel(); renderChart(); renderBars(); renderTable();
   }
   function renderCall(){
     var lim=Date.now()-7*864e5, c=state.leads.filter(function(l){return l.etapa==='so_preencheu'&&l.status==='novo'&&new Date(l.criado_em)>=lim;}).slice(0,6);
@@ -457,6 +481,35 @@ td.c-src,td.c-when{white-space:nowrap}
     state.leads.forEach(function(l){ var o=origin(l); s[o]=(s[o]||0)+1; var i=(l.interesse||'Não informado').replace(/\s*\(privativo\)/,''); it[i]=(it[i]||0)+1; });
     bars('src-bars',s); bars('int-bars',it);
   }
+  /* ---------- funil: acesso, clique, formulário, WhatsApp ---------- */
+  var ALVO={topo:'Botão do topo',menu:'Botão do menu',preco:'Botão do preço',final:'Botão do final da página',flutuante:'Botão flutuante (celular)',outro:'Outro botão'};
+  function renderFunnel(){
+    var E=state.events||[], L=state.leads;
+    function uniq(t){ var o={}; E.forEach(function(e){ if(e.tipo===t) o[e.sessao]=1; }); return Object.keys(o).length; }
+    var vis=uniq('visita'), cli=uniq('clique'), frm=uniq('form_aberto'), lead=L.length, sent=L.filter(function(l){return l.etapa==='abriu_whatsapp';}).length;
+    if(!E.length){
+      $('funnel').innerHTML='<p class="fnote">A contagem de acessos e cliques começa assim que o site tiver o acompanhamento ligado. Por enquanto, os números de leads aparecem nos quadros acima.</p>';
+      $('fsplit').hidden=true; return;
+    }
+    $('fsplit').hidden=false;
+    var steps=[['Acessaram o site','pessoas diferentes',vis],['Clicaram num botão','de contato',cli],['Abriram o formulário','',frm],['Deixaram o WhatsApp','viraram lead',lead],['Mandaram mensagem','abriram o WhatsApp',sent]];
+    var top=Math.max(vis,1);
+    $('funnel').innerHTML=steps.map(function(st,i){
+      var prev=i?steps[i-1][2]:0, p=i?(prev?Math.round(st[2]/prev*100)+'% da etapa anterior':''):(st[2]+' no total');
+      return '<div class="fstep"><div class="fl">'+st[0]+(st[1]?'<small>'+st[1]+'</small>':'')+'</div><div class="ftrack"><div class="ffill" style="width:'+Math.max(st[2]/top*100,st[2]?4:0)+'%">'+st[2]+'</div></div><div class="fpct">'+(i?p:'')+'</div></div>';
+    }).join('');
+    var vs={}, cs={}; E.forEach(function(e){ if(e.tipo==='visita'){ var o=origin(e); vs[o]=(vs[o]||0)+1; } else if(e.tipo==='clique'&&e.alvo&&e.alvo!=='continuar_whatsapp'){ var a=ALVO[e.alvo]||e.alvo; cs[a]=(cs[a]||0)+1; } });
+    bars('visit-src',vs); bars('click-bars',cs);
+  }
+  function demoEvents(leads,days){
+    var seed=11; function rnd(){seed=(seed*16807)%2147483647; return (seed-1)/2147483646;}
+    var src=[['instagram','social'],['instagram','cpc'],['google',''],['',''],['facebook','cpc'],['instagram','social']], alv=['topo','topo','flutuante','flutuante','preco','final','menu'], out=[], n=Math.max(leads.length*9,40);
+    for(var i=0;i<n;i++){ var t=new Date(Date.now()-rnd()*days*864e5).toISOString(), f=src[Math.floor(rnd()*src.length)], sid='d'+i;
+      out.push({tipo:'visita',sessao:sid,utm_source:f[0],utm_medium:f[1],referrer:f[0]===''&&rnd()<.4?'https://www.google.com/':'',criado_em:t});
+      if(rnd()<.24){ out.push({tipo:'clique',sessao:sid,alvo:alv[Math.floor(rnd()*alv.length)],criado_em:t}); if(rnd()<.8) out.push({tipo:'form_aberto',sessao:sid,criado_em:t}); } }
+    return out;
+  }
+
   /* campos extras do formulário de cada nicho (convênio, horário, tem site...) */
   function rotulo(k){ k=String(k).replace(/[_-]+/g,' ').trim(); return k.charAt(0).toUpperCase()+k.slice(1); }
   function extraTxt(l){ var e=l.extra||{}; return Object.keys(e).filter(function(k){return e[k]!==''&&e[k]!=null;}).map(function(k){ return (k==='site'?'':rotulo(k)+': ')+e[k]; }).join(' · '); }
