@@ -544,7 +544,7 @@ td.c-src,td.c-when{white-space:nowrap}
     else note.textContent='A versão '+lider+' está na frente, mas a diferença ainda pode ser sorte. Vale esperar mais visitas antes de decidir.';
   }
   /* ---------- funil: acesso, clique, formulário, WhatsApp ---------- */
-  var ALVO={topo:'Botão do topo',menu:'Botão do menu',preco:'Botão do preço',final:'Botão do final da página',flutuante:'Botão flutuante (celular)',outro:'Outro botão'};
+  var ALVO={topo:'Botão do topo',menu:'Botão do menu',preco:'Botão do preço',final:'Botão do final da página',flutuante:'Botão flutuante (celular)',outro:'Outro botão',meio_problema:'Botão depois do problema',meio_entrega:'Botão depois de "o que entra"',meio_cases:'Botão depois dos cases',meio_painel:'Botão depois do painel'};
   function renderFunnel(){
     var E=state.events||[], L=state.leads;
     function uniq(t){ var o={}; E.forEach(function(e){ if(e.tipo===t) o[e.sessao]=1; }); return Object.keys(o).length; }

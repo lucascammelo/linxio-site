@@ -319,7 +319,7 @@ p{margin:0}
 .dt-bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:transparent}
 .dt-bar i{display:block;height:100%;width:0;background:var(--violet)}
 .dash-tabs button[aria-selected="true"] .dt-bar i{width:100%}
-.dash-frame.auto .dash-tabs button[aria-selected="true"] .dt-bar i{width:0;animation:dtfill var(--dt-time,6s) linear forwards}
+.dash-frame.auto .dash-tabs button[aria-selected="true"] .dt-bar i{width:0;animation:none}
 .dash-frame.auto.paused .dash-tabs button[aria-selected="true"] .dt-bar i{animation-play-state:paused}
 @keyframes dtfill{to{width:100%}}
 .dash-stage{position:relative;aspect-ratio:1600/820;background:var(--bg)}
@@ -333,7 +333,7 @@ p{margin:0}
 @media (prefers-reduced-motion:reduce){.dash-panel,.dash-panel.on{transition:none;transform:none}}
 
 .dash-shot figcaption{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
-.dash-points{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 32px}
+.dash-points{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 32px}
 .dash-points li{display:grid;gap:6px;min-width:0;padding-top:18px;border-top:1px solid var(--line)}
 .dash-points b{font-family:var(--f-display);font-size:clamp(19px,1.7vw,22px);letter-spacing:-.01em}
 .dash-points span{color:var(--muted);font-size:15.5px}
@@ -500,6 +500,44 @@ p{margin:0}
 .lead-close{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:0;background:var(--bg-3);color:var(--fg);display:grid;place-items:center;cursor:pointer}
 .lead-close svg{width:18px;height:18px}
 html.locked,html.locked body{overflow:hidden}
+
+/* ===== topo: painel no celular ===== */
+.hero-phone{justify-self:center;width:min(100%,300px);position:relative}
+.hero-phone .ph{border-radius:38px;padding:10px;background:#05080e;border:1px solid var(--line);box-shadow:0 50px 100px -40px rgba(0,0,0,.85),0 0 0 1px rgba(108,180,238,.08) inset;transform:rotate(2.5deg)}
+.hero-phone .ph-screen{border-radius:29px;overflow:hidden;aspect-ratio:672/1220;background:var(--bg)}
+.hero-phone img{display:block;width:100%;height:auto}
+.hero-phone .ph-tag{position:absolute;left:-22px;top:46%;font-family:var(--f-mono);font-size:12px;background:var(--orange);color:#140b04;padding:7px 12px;border-radius:99px;box-shadow:0 12px 30px -10px rgba(255,135,64,.7);transform:rotate(-4deg)}
+.hero-phone figcaption{margin-top:14px;text-align:center;font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+@media (max-width:980px){.hero-phone{width:min(78%,280px);margin-top:12px}.hero-phone .ph-tag{left:-14px}}
+/* rastreio: print do painel */
+.stack-visual.v-img{padding:14px;align-content:center}
+.stack-visual.v-img img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line)}
+.stack-visual.v-img small{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);text-align:center}
+/* chamadas no meio da página */
+.mid-cta{margin-top:clamp(40px,5vw,64px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 28px;padding:22px 26px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(90deg,rgba(108,180,238,.06),rgba(255,135,64,.06))}
+.mid-cta p{margin:0;font-family:var(--f-display);font-size:clamp(19px,2vw,24px);letter-spacing:-.01em;max-width:40ch}
+.mid-cta p small{display:block;font-family:inherit;font-size:15px;color:var(--muted);letter-spacing:0;margin-top:4px}
+@media (max-width:640px){.mid-cta{padding:20px}.mid-cta .btn{width:100%;justify-content:center}}
+/* case da Clara no mesmo formato da Tarzan */
+.case-next{margin-top:clamp(56px,7vw,96px)}
+.case-next .case-h{display:grid;gap:8px;margin-bottom:clamp(24px,3vw,36px)}
+.case-next .case-h h3{font-size:clamp(30px,3.6vw,48px);letter-spacing:-.02em}
+.case-next .case-h p{color:var(--muted);max-width:60ch;margin:0}
+.case-shot .clara-shot{display:block;width:100%;height:auto;aspect-ratio:1280/800;object-fit:cover}
+.btn-row{display:flex;flex-wrap:wrap;gap:12px}
+/* ===== painel: 5 abas e contorno que corre ===== */
+.dash-frame{position:relative}
+.dash-tabs{grid-template-columns:repeat(5,minmax(0,1fr))}
+.dash-tabs button{font-size:13.5px;padding:10px 12px 13px}
+.dash-trace{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;overflow:visible;opacity:0;transition:opacity .4s}
+.dash-frame.auto .dash-trace{opacity:1}
+.dash-trace path{fill:none;stroke:#FF9A52;stroke-width:2.5;stroke-linecap:round;filter:drop-shadow(0 0 4px rgba(255,135,64,.95)) drop-shadow(0 0 12px rgba(255,135,64,.55))}
+.dash-trace circle{fill:#FFD2B0;filter:drop-shadow(0 0 6px #FF8740) drop-shadow(0 0 14px rgba(255,135,64,.8))}
+@media (max-width:640px){
+  .dash-tabs{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .dash-tabs::-webkit-scrollbar{display:none}
+  .dash-tabs button{flex:0 0 31%;scroll-snap-align:start}
+}
 </style>
 
 <div class="grain" aria-hidden="true"></div>
@@ -553,20 +591,11 @@ html.locked,html.locked body{overflow:hidden}
         </ul>
       </div>
 
-      <div class="console" role="img" aria-label="Exemplo de painel mostrando um lead que veio de um anúncio no Instagram e caiu no WhatsApp">
-        <div class="console-top">
-          <div class="console-dots"><i></i><i></i><i></i></div>
-          <span class="console-title">painel de leads</span>
-          <span class="tag">exemplo</span>
-        </div>
-        <div class="console-body">
-          <div class="log"><time>14:02</time><b>visita</b><span>instagram / reels</span></div>
-          <div class="log"><time>14:03</time><b>clique</b><span>botão do WhatsApp</span></div>
-          <div class="log"><time>14:03</time><b>lead salvo</b><span>painel · Ana R.</span></div>
-          <div class="log hot"><time>14:05</time><b>conversa</b><span>aberta no seu WhatsApp<span class="caret"></span></span></div>
-        </div>
-        <div class="console-foot">origem: ?<mark>utm_source</mark>=instagram&amp;<mark>utm_campaign</mark>=reels-trilha</div>
-      </div>
+      <figure class="hero-phone" aria-label="Painel de leads aberto no celular">
+        <div class="ph"><div class="ph-screen"><img src="/img/1eab370ca1cf.webp" width="672" height="1340" alt="Painel no celular com total de leads, quem mandou e quem não mandou mensagem, e a lista de quem chamar agora"></div></div>
+        <span class="ph-tag" aria-hidden="true">lead novo há 18 min</span>
+        <figcaption>seu painel · dados ilustrativos</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -605,6 +634,7 @@ html.locked,html.locked body{overflow:hidden}
           <p>Página genérica, igual a outras mil, faz seu negócio parecer menor do que é. Cliente compra de quem passa confiança.</p>
         </article>
       </div>
+      <div class="mid-cta" data-reveal><p>Chega de perder visita que não vira conversa.<small>Me conta do seu negócio e eu te mostro como a página ficaria.</small></p><a class="btn btn-primary magnetic" data-wa="lp" data-alvo="meio_problema" href="#contato"><span class="btn-inner">Quero minha página</span></a></div>
     </div>
   </section>
 
@@ -648,13 +678,11 @@ html.locked,html.locked body{overflow:hidden}
           <div>
             <span class="stack-kicker">Rastreio</span>
             <h3>Mostra de qual anúncio veio cada cliente.</h3>
-            <p>Pixel da Meta, Google Analytics e links rastreados já configurados. Você para de chutar e passa a investir no que traz resultado.</p>
+            <p>Pixel da Meta, Google Analytics e links rastreados já configurados. No painel você vê quantas visitas vieram de cada lugar e para de chutar onde investir.</p>
           </div>
-          <div class="stack-visual v-utm" aria-hidden="true">
-            <div><b>linxio.com.br</b>/?<span class="k">utm_source</span>=<span class="v">instagram</span></div>
-            <div>&amp;<span class="k">utm_medium</span>=<span class="v">stories</span></div>
-            <div>&amp;<span class="k">utm_campaign</span>=<span class="v">promo-sabado</span></div>
-            <div style="margin-top:10px;color:var(--fg)">→ evento <span class="v">Contact</span> registrado</div>
+          <div class="stack-visual v-img">
+            <img src="/img/7659dfe7d345.webp" width="900" height="393" loading="lazy" alt="Painel mostrando as visitas por origem: Instagram, Google, anúncio no Instagram, anúncio no Facebook e direto">
+            <small>no seu painel · dados ilustrativos</small>
           </div>
         </article>
 
@@ -672,6 +700,7 @@ html.locked,html.locked body{overflow:hidden}
           </div>
         </article>
       </div>
+      <div class="mid-cta" data-reveal><p>Quer uma página assim pro seu negócio?<small>Pronta em 10 dias úteis, pagamento único de R$ 1.497.</small></p><a class="btn btn-primary magnetic" data-wa="lp" data-alvo="meio_entrega" href="#contato"><span class="btn-inner">Quero minha página</span></a></div>
     </div>
   </section>
 
@@ -771,26 +800,46 @@ html.locked,html.locked body{overflow:hidden}
           <a class="btn btn-ghost magnetic" href="https://tarzantrip.com.br" target="_blank" rel="noopener" style="justify-self:start"><span class="btn-inner">Ver o site no ar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg></span></a>
         </div>
       </article>
-      <div class="wk-list" data-reveal>
-        <span class="wk-label">Outros projetos</span>
-        <a class="wk" href="https://linxio.com.br/exemplos/clara" data-cursor="testar">
-          <div class="wk-main">
-            <h3 class="wk-title">Clara Trilhas RJ</h3>
-            <p class="wk-desc">Site de guia de trilhas em português e inglês, com catálogo de passeios. Nesta versão de exemplo, cada reserva passa pelo formulário e cai no painel. Pode testar.</p>
-          </div>
-          <div class="wk-tags"><span>bilíngue</span><span>catálogo</span><span>formulário + painel</span></div>
-          <span class="wk-go" aria-hidden="true">testar <b>→</b></span>
-          <div class="wk-shot">
-            <div class="case-frame">
-          <div class="case-bar"><div class="console-dots"><i></i><i></i><i></i></div><span class="case-url">linxio.com.br/exemplos/clara</span></div>
-          <div class="case-art clara" aria-hidden="true">
-            <span class="small">Guia de trilhas · PT / EN</span>
-            <span class="big">Clara<br>Trilhas RJ</span>
+      <article class="case-next" data-reveal>
+        <div class="case-h">
+          <span class="eyebrow">Outro case</span>
+          <h3>Clara Trilhas RJ: do Instagram pro site.</h3>
+          <p>Guia de passeios no Rio, credenciada no Cadastur, que atendia só pelo Instagram e WhatsApp. Agora tem um site pra mandar pros clientes, em português e inglês.</p>
+        </div>
+        <div class="case-feature">
+          <a class="case-shot" href="https://linxio.com.br/exemplos/clara" data-cursor="testar" aria-label="Abrir a versão de exemplo do site da Clara Trilhas RJ">
+            <div class="case-frame tilt">
+              <div class="case-bar"><div class="console-dots"><i></i><i></i><i></i></div><span class="case-url">claratrilhasrj.vercel.app</span></div>
+              <img class="clara-shot" src="/img/6f3d37ee710a.webp" width="1280" height="800" loading="lazy" alt="Topo do site da Clara Trilhas RJ com o pôr do sol no Rio e os botões Ver passeios e Falar no WhatsApp">
+            </div>
+          </a>
+          <div class="case-body">
+            <div class="ba">
+              <div class="ba-col">
+                <span class="ba-label">Antes</span>
+                <ul>
+                  <li>Sem site, só Instagram</li>
+                  <li>Passeios, preços e horários espalhados em posts e conversas</li>
+                  <li>Turista estrangeiro sem informação em inglês</li>
+                </ul>
+              </div>
+              <div class="ba-col after">
+                <span class="ba-label">Depois</span>
+                <ul>
+                  <li>9 passeios com fotos, preço, horários e ponto de encontro</li>
+                  <li>Português e inglês, conforme o celular do visitante</li>
+                  <li>Botão de reserva que já abre o WhatsApp com o passeio escrito</li>
+                </ul>
+              </div>
+            </div>
+            <div class="case-tags"><span>catálogo de passeios</span><span>2 idiomas</span><span>reserva no WhatsApp</span></div>
+            <div class="btn-row">
+              <a class="btn btn-ghost magnetic" href="https://linxio.com.br/exemplos/clara"><span class="btn-inner">Testar a versão com formulário e painel</span></a>
+            </div>
           </div>
         </div>
-          </div>
-        </a>
-      </div>
+      </article>
+      <div class="mid-cta" data-reveal><p>O próximo case pode ser o seu.<small>Mesmo padrão: formulário, WhatsApp e rastreio de cada contato.</small></p><a class="btn btn-primary magnetic" data-wa="lp" data-alvo="meio_cases" href="#contato"><span class="btn-inner">Quero minha página</span></a></div>
     </div>
   </section>
 
@@ -799,12 +848,13 @@ html.locked,html.locked body{overflow:hidden}
       <div class="section-head" data-reveal style="margin-bottom:0">
         <span class="eyebrow">Depois do clique</span>
         <h2>Cada contato, num painel só seu.</h2>
-        <p>Quem preencheu o formulário aparece aqui na hora, com nome, WhatsApp e de onde veio. Até quem deixou o número e desistiu de mandar mensagem.</p>
+        <p>Quem preencheu o formulário aparece aqui na hora, com nome, WhatsApp e de onde veio. E você vê como as pessoas usam a sua página: quantas visitam, até onde leem e em qual botão clicam.</p>
       </div>
       <figure class="dash-shot" data-reveal>
         <div class="dash-frame">
+          <svg class="dash-trace" aria-hidden="true"><path/><circle r="7"/></svg>
           <div class="dash-bar" aria-hidden="true"><i></i><i></i><i></i><span>linxio.com.br/painel</span></div>
-          <div class="dash-tabs" role="tablist" aria-label="Telas do painel"><button type="button" role="tab" id="dt-1" aria-controls="dp-1" aria-selected="true"><span class="dt-n">1</span>Quem chamar agora<span class="dt-bar" aria-hidden="true"><i></i></span></button><button type="button" role="tab" id="dt-2" aria-controls="dp-2" aria-selected="false" tabindex="-1"><span class="dt-n">2</span>Números e origem<span class="dt-bar" aria-hidden="true"><i></i></span></button><button type="button" role="tab" id="dt-3" aria-controls="dp-3" aria-selected="false" tabindex="-1"><span class="dt-n">3</span>Todos os leads<span class="dt-bar" aria-hidden="true"><i></i></span></button></div>
+          <div class="dash-tabs" role="tablist" aria-label="Telas do painel"><button type="button" role="tab" id="dt-1" aria-controls="dp-1" aria-selected="true"><span class="dt-n">1</span>Quem chamar agora<span class="dt-bar" aria-hidden="true"><i></i></span></button><button type="button" role="tab" id="dt-2" aria-controls="dp-2" aria-selected="false" tabindex="-1"><span class="dt-n">2</span>Números e origem<span class="dt-bar" aria-hidden="true"><i></i></span></button><button type="button" role="tab" id="dt-3" aria-controls="dp-3" aria-selected="false" tabindex="-1"><span class="dt-n">3</span>Todos os leads<span class="dt-bar" aria-hidden="true"><i></i></span></button><button type="button" role="tab" id="dt-4" aria-controls="dp-4" aria-selected="false" tabindex="-1"><span class="dt-n">4</span>Do acesso à conversa<span class="dt-bar" aria-hidden="true"><i></i></span></button><button type="button" role="tab" id="dt-5" aria-controls="dp-5" aria-selected="false" tabindex="-1"><span class="dt-n">5</span>Como usam a página<span class="dt-bar" aria-hidden="true"><i></i></span></button></div>
           <div class="dash-stage">
             <div class="dash-panel on" role="tabpanel" id="dp-1" aria-labelledby="dt-1">
               <picture><img src="/img/a06654f59a42.webp" width="1600" height="731" loading="lazy" alt="Painel com o total de leads do período, quem mandou e quem não mandou mensagem, reservas fechadas e a lista de quem chamar agora no WhatsApp"></picture>
@@ -815,6 +865,12 @@ html.locked,html.locked body{overflow:hidden}
             <div class="dash-panel" role="tabpanel" id="dp-3" aria-labelledby="dt-3" aria-hidden="true">
               <picture><img src="/img/f026eb629aa1.webp" width="1600" height="820" loading="lazy" alt="Lista de todos os leads com quando chegou, interesse, data desejada, origem, se mandou mensagem e o status do atendimento"></picture>
             </div>
+            <div class="dash-panel" role="tabpanel" id="dp-4" aria-labelledby="dt-4" aria-hidden="true">
+              <picture><img src="/img/c4cf18adf611.webp" width="1600" height="829" loading="lazy" alt="Funil do acesso à conversa: visitas, cliques, formulário aberto, WhatsApp deixado e mensagem enviada, com as visitas por origem e o botão mais clicado"></picture>
+            </div>
+            <div class="dash-panel" role="tabpanel" id="dp-5" aria-labelledby="dt-5" aria-hidden="true">
+              <picture><img src="/img/c6fd87044cd7.webp" width="1600" height="522" loading="lazy" alt="Como as pessoas usam a página: até onde rolaram, tempo na página e as dúvidas mais abertas"></picture>
+            </div>
           </div>
         </div>
         <figcaption>Dados ilustrativos. Faz parte do plano mensal.</figcaption>
@@ -822,6 +878,7 @@ html.locked,html.locked body{overflow:hidden}
       <ul class="dash-points" data-reveal>
         <li><b>Ninguém se perde</b><span>Quem deixou o WhatsApp e não chamou aparece em "Pra chamar agora", com a mensagem pronta.</span></li>
         <li><b>Você sabe o que funciona</b><span>Instagram, Google ou anúncio: cada contato mostra de onde veio.</span></li>
+        <li><b>A página com números</b><span>Visitas, cliques, tempo na página e até onde leem. Você sabe o que melhorar.</span></li>
         <li><b>Do contato à venda</b><span>Marque quem está em conversa e quem fechou, e veja quantos viraram cliente.</span></li>
       </ul>
       <div class="alerts" data-reveal>
@@ -835,6 +892,7 @@ html.locked,html.locked body{overflow:hidden}
           <p class="chat-note">Mensagens de exemplo, no formato real dos avisos.</p>
         </div>
       </div>
+      <div class="mid-cta" data-reveal><p>Quer ver os seus números assim?<small>O painel vem no plano mensal, opcional e sem fidelidade.</small></p><a class="btn btn-primary magnetic" data-wa="lp" data-alvo="meio_painel" href="#contato"><span class="btn-inner">Quero minha página</span></a></div>
     </div>
   </section>
 
@@ -876,6 +934,7 @@ html.locked,html.locked body{overflow:hidden}
           <div class="price-mo">R$ 197<small>/mês</small></div>
           <ul class="checks">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Painel de leads só seu</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Números da página: visitas, cliques e até onde leem</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Aviso no WhatsApp a cada contato novo</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Aviso de quem preencheu e não chamou</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>1 alteração de conteúdo por mês</li>
@@ -1118,36 +1177,63 @@ html.locked,html.locked body{overflow:hidden}
   lm.addEventListener('click', function(e){ if(e.target===lm) closeLead(); });
   lm.addEventListener('keydown', function(e){ if(e.key==='Escape') closeLead(); });
   if(location.hash==='#contato') setTimeout(openLead, 300);
-  /* ===== abas das telas do painel: trocam sozinhas até a pessoa clicar ===== */
+  /* ===== abas das telas do painel: trocam sozinhas até a pessoa clicar =====
+     Um contorno laranja corre em volta do quadro mostrando o tempo até a próxima aba. */
   (function(){
     var frame=document.querySelector('.dash-frame'); if(!frame) return;
-    var tabs=[].slice.call(frame.querySelectorAll('[role="tab"]')), cur=0, timer=null, TIME=6000, manual=false, visible=false;
+    var tabs=[].slice.call(frame.querySelectorAll('[role="tab"]')), cur=0, TIME=6000, manual=false, visible=false, paused=false;
     var reduceM=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var svg=frame.querySelector('.dash-trace'), path=svg&&svg.querySelector('path'), dot=svg&&svg.querySelector('circle'), LEN=0;
+    var t0=0, done=0, raf=0;
+    function shape(){
+      if(!svg) return; var w=frame.clientWidth, h=frame.clientHeight, r=18, i=1.25;
+      svg.setAttribute('viewBox','0 0 '+w+' '+h);
+      var x0=i, y0=i, x1=w-i, y1=h-i, rr=r-i;
+      path.setAttribute('d','M'+(x0+rr)+' '+y0+' H'+(x1-rr)+' A'+rr+' '+rr+' 0 0 1 '+x1+' '+(y0+rr)+' V'+(y1-rr)+' A'+rr+' '+rr+' 0 0 1 '+(x1-rr)+' '+y1+' H'+(x0+rr)+' A'+rr+' '+rr+' 0 0 1 '+x0+' '+(y1-rr)+' V'+(y0+rr)+' A'+rr+' '+rr+' 0 0 1 '+(x0+rr)+' '+y0+' Z');
+      LEN=path.getTotalLength(); path.style.strokeDasharray=LEN; draw(done/TIME);
+    }
+    function draw(p){
+      if(!svg||!LEN) return; p=Math.max(0,Math.min(1,p));
+      path.style.strokeDashoffset=LEN*(1-p);
+      var pt=path.getPointAtLength(LEN*p); dot.setAttribute('cx',pt.x); dot.setAttribute('cy',pt.y);
+      dot.style.opacity=p>0.002?1:0;
+    }
     function sel(i){
       cur=(i+tabs.length)%tabs.length;
       tabs.forEach(function(t,j){ var on=j===cur, p=document.getElementById(t.getAttribute('aria-controls'));
         t.setAttribute('aria-selected',on); t.tabIndex=on?0:-1; p.classList.toggle('on',on); p.setAttribute('aria-hidden',!on);
         var bar=t.querySelector('.dt-bar i'); if(bar){ bar.style.animation='none'; void bar.offsetWidth; bar.style.animation=''; } });
+      if(manual){ var tb=tabs[cur]; if(tb.scrollIntoView && tb.parentElement.scrollWidth>tb.parentElement.clientWidth) tb.parentElement.scrollTo({left:tb.offsetLeft-8,behavior:'smooth'}); }
     }
-    function stop(){ clearTimeout(timer); timer=null; }
-    function loop(){ stop(); if(manual||!visible||reduceM||frame.classList.contains('paused')) return; timer=setTimeout(function(){ sel(cur+1); loop(); },TIME); }
+    function running(){ return !manual && visible && !reduceM && !paused; }
+    function tick(now){
+      raf=0; if(!running()) return;
+      if(!t0) t0=now; done+=now-t0; t0=now;
+      if(done>=TIME){ done=0; sel(cur+1); var tb=tabs[cur], bar=tb.parentElement; if(bar.scrollWidth>bar.clientWidth) bar.scrollTo({left:tb.offsetLeft-8,behavior:'smooth'}); }
+      draw(done/TIME); raf=requestAnimationFrame(tick);
+    }
+    function play(){ t0=0; if(!raf&&running()) raf=requestAnimationFrame(tick); }
+    function stopTimer(){ if(raf){ cancelAnimationFrame(raf); raf=0; } }
+    function goManual(i){ manual=true; frame.classList.remove('auto'); stopTimer(); sel(i); }
     if(!reduceM){ frame.classList.add('auto'); frame.style.setProperty('--dt-time',TIME+'ms'); }
     tabs.forEach(function(t,i){
-      t.addEventListener('click',function(){ manual=true; frame.classList.remove('auto'); stop(); sel(i); });
-      t.addEventListener('keydown',function(e){ var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0; if(!d) return; e.preventDefault(); manual=true; frame.classList.remove('auto'); stop(); sel(i+d); tabs[cur].focus(); });
+      t.addEventListener('click',function(){ goManual(i); });
+      t.addEventListener('keydown',function(e){ var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0; if(!d) return; e.preventDefault(); goManual(i+d); tabs[cur].focus(); });
     });
-    frame.addEventListener('mouseenter',function(){ frame.classList.add('paused'); stop(); });
-    frame.addEventListener('mouseleave',function(){ frame.classList.remove('paused'); sel(cur); loop(); });
+    frame.addEventListener('mouseenter',function(){ paused=true; frame.classList.add('paused'); stopTimer(); });
+    frame.addEventListener('mouseleave',function(){ paused=false; frame.classList.remove('paused'); play(); });
+    if(window.ResizeObserver) new ResizeObserver(shape).observe(frame); else window.addEventListener('resize',shape);
+    shape();
     if('IntersectionObserver' in window){
-      new IntersectionObserver(function(es){ visible=es[0].isIntersecting; if(visible){ sel(cur); loop(); } else stop(); },{threshold:.4}).observe(frame);
-    } else { visible=true; loop(); }
+      new IntersectionObserver(function(es){ visible=es[0].isIntersecting; if(visible) play(); else stopTimer(); },{threshold:.4}).observe(frame);
+    } else { visible=true; play(); }
   })();
 
 
   document.querySelectorAll('[data-wa]').forEach(function(a){
     var key = a.getAttribute('data-wa');
     /* todos os botões, inclusive o flutuante, abrem o formulário antes do WhatsApp */
-    var alvo = a.classList.contains('float-wa') ? 'flutuante' : a.closest('.nav') ? 'menu' : a.closest('.hero') ? 'topo' : a.closest('#preco') ? 'preco' : a.closest('.final') ? 'final' : 'outro';
+    var alvo = a.getAttribute('data-alvo') || (a.classList.contains('float-wa') ? 'flutuante' : a.closest('.nav') ? 'menu' : a.closest('.hero') ? 'topo' : a.closest('#preco') ? 'preco' : a.closest('.final') ? 'final' : 'outro');
     a.setAttribute('href','#contato'); a.removeAttribute('target'); a.removeAttribute('rel'); a.setAttribute('aria-haspopup','dialog');
     a.addEventListener('click', function(e){ e.preventDefault(); evento('clique', alvo); openLead(); });
     return;
@@ -1269,7 +1355,7 @@ html.locked,html.locked body{overflow:hidden}
   tl.from('#hero-title .w>span',{yPercent:110,duration:1.1,stagger:.05})
     .from('.hero .eyebrow, .hero-sub, .hero-cta, .hero-facts',{y:24,opacity:0,duration:.9,stagger:.08},'-=.8')
     .from('.console',{y:40,opacity:0,duration:1.1},'-=.9')
-    .from('.console .log',{x:-16,opacity:0,duration:.6,stagger:.18},'-=.6');
+    .from('.hero-phone',{y:30,opacity:0,duration:1},'-=.7');
 
   if(!ST) return;
 
