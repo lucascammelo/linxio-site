@@ -27,9 +27,9 @@
   --bg:#0A111D;
   --bg-2:#101A2A;
   --bg-3:#172338;
-  --line:#22304A;
+  --line:#2B3A57;
   --fg:#EDF1F6;
-  --muted:#9AA8BC;
+  --muted:#AAB7C9;
   --violet:#6CB4EE;
   --violet-soft:rgba(108,180,238,.14);
   --orange:#FF8740;
@@ -136,7 +136,7 @@ p{margin:0}
 .console-dots{display:flex;gap:6px}
 .console-dots i{width:10px;height:10px;border-radius:50%;background:var(--line);display:block}
 .console-title{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
-.tag{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--violet);background:var(--violet-soft);padding:4px 8px;border-radius:6px}
+.tag{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--violet);background:var(--violet-soft);padding:4px 8px;border-radius:6px}
 .console-body{padding:10px 8px;display:grid}
 .log{display:grid;grid-template-columns:52px 104px minmax(0,1fr);gap:10px;align-items:baseline;padding:12px;border-radius:10px;font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums}
 .log time{color:var(--muted)}
@@ -500,6 +500,16 @@ p{margin:0}
 .lead-close{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:0;background:var(--bg-3);color:var(--fg);display:grid;place-items:center;cursor:pointer}
 .lead-close svg{width:18px;height:18px}
 html.locked,html.locked body{overflow:hidden}
+
+/* ===== contraste: rótulos importantes mais visíveis ===== */
+.addon{border:1.5px solid rgba(108,180,238,.45);background:linear-gradient(180deg,rgba(108,180,238,.07),rgba(108,180,238,0) 60%)}
+.addon .tag{font-size:13px;font-weight:600;letter-spacing:.1em;color:#06121F;background:var(--violet);padding:7px 14px;border-radius:99px;box-shadow:0 8px 24px -10px rgba(108,180,238,.8)}
+.hero-facts{color:#C9D3E0;font-size:13.5px}
+.case-tags span,.wk-tags span{font-size:12.5px;color:#C9D3E0;border-color:#3A4C6E}
+.ba-label{font-size:12.5px;color:#C9D3E0}
+.price-note{color:#C9D3E0}
+.hero-phone figcaption,.stack-visual.v-img small,.dash-shot figcaption,.chat-note{font-size:12.5px;color:#C9D3E0}
+.wk-label{color:#C9D3E0}
 
 /* ===== topo: painel no celular ===== */
 .hero-phone{justify-self:center;width:min(100%,300px);position:relative}
