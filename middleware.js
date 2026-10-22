@@ -7,13 +7,14 @@ const ROBO = /bot|crawl|spider|slurp|facebookexternalhit|whatsapp|telegram|previ
 export default function middleware(request) {
   const url = new URL(request.url);
   const headers = new Headers();
+  const forcada = url.searchParams.get('v');
   // robôs (Google, prévia de link no WhatsApp) sempre veem a versão A e ficam fora do teste
-  if (ROBO.test(request.headers.get('user-agent') || '')) {
+  if (forcada !== 'a' && forcada !== 'b' && ROBO.test(request.headers.get('user-agent') || '')) {
     headers.set('x-middleware-next', '1');
     return new Response(null, { headers });
   }
   const m = (request.headers.get('cookie') || '').match(/(?:^|;\s*)lx_v=([ab])/);
-  let v = url.searchParams.get('v');
+  let v = forcada;
   if (v !== 'a' && v !== 'b') v = m ? m[1] : (Math.random() < 0.5 ? 'a' : 'b');
   if (!m || m[1] !== v) headers.append('set-cookie', `lx_v=${v}; Path=/; Max-Age=7776000; SameSite=Lax; Secure`);
   if (v === 'b') {
