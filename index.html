@@ -981,6 +981,8 @@ html.locked,html.locked body{overflow:hidden}
   /* ===== CONFIGURAÇÃO: troque pelo seu número (DDI + DDD + número, só dígitos) ===== */
   var WHATSAPP = '5521997557162';
   var LEADS_URL = 'https://webhooks.lucasb2k.shop/webhook/tarzan-site-leads';
+  /* teste A/B: esta é a versão A (a B é gerada a partir desta no build) */
+  var VARIANTE = 'a';
   var MSGS = {
     lp: 'Oi Lucas, vim pelo site da Linxio e quero uma landing page.',
     ia: 'Oi Lucas, vim pelo site da Linxio e quero saber do agente de IA no WhatsApp.'
@@ -1023,7 +1025,7 @@ html.locked,html.locked body{overflow:hidden}
   var formAberto=false;
   function evento(tipo, alvo){
     if(tipo==='form_aberto'){ if(formAberto) return; formAberto=true; }
-    var p={ tipo:tipo, sessao:SID, alvo:alvo||'', pagina:location.href.split('#')[0].split('?')[0], referrer:document.referrer||'',
+    var p={ tipo:tipo, variante:VARIANTE, sessao:SID, alvo:alvo||'', pagina:location.href.split('#')[0].split('?')[0], referrer:document.referrer||'',
       utm_source:UTM.utm_source||'', utm_medium:UTM.utm_medium||'', utm_campaign:UTM.utm_campaign||'', utm_content:UTM.utm_content||'',
       dispositivo: window.matchMedia('(max-width: 820px)').matches ? 'celular' : 'computador' };
     try{ fetch(SB_URL+'/rest/v1/rpc/registrar_evento',{method:'POST',keepalive:true,headers:{'apikey':SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_cliente:'linxio',p:p})}).catch(function(){}); }catch(e){}
@@ -1068,7 +1070,7 @@ html.locked,html.locked body{overflow:hidden}
   function digits(){ var d=lw.value.replace(/\D/g,''); if(d.length>=10 && d.length<=11) d='55'+d; return d; }
   function val(id){ return document.getElementById(id).value.trim(); }
   function leadData(etapa){
-    return { cliente:'linxio', lead_id:LEAD_ID, etapa:etapa, nome:val('lead-nome'), whatsapp:digits(),
+    return { cliente:'linxio', variante:VARIANTE, lead_id:LEAD_ID, etapa:etapa, nome:val('lead-nome'), whatsapp:digits(),
       trilha:val('lead-negocio'), site:val('lead-site'), idioma:'pt',
       utm_source:UTM.utm_source||'', utm_medium:UTM.utm_medium||'', utm_campaign:UTM.utm_campaign||'', utm_content:UTM.utm_content||'',
       pagina:location.href.split('#')[0], referrer:document.referrer||'' };

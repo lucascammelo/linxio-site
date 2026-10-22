@@ -853,7 +853,7 @@ function digits() {
 function tourName(l) { const t = TOURS.find((x) => x.id === lt.value); return t ? t[l].name : ''; }
 function leadData(etapa) {
   return {cliente: CLIENTE, lead_id: LEAD_ID, etapa, nome: val('lead-nome'), whatsapp: digits(),
-    trilha: tourName('pt') || 'Ainda não sabe', pessoas: String(parseInt(val('lead-pessoas'), 10) || ''), data_trilha: val('lead-data'), idioma: lang,
+    trilha: tourName('pt') || 'Ainda não sabe', pessoas: String(parseInt(val('lead-pessoas'), 10) || ''), data: val('lead-data'), idioma: lang,
     utm_source: UTM.utm_source || '', utm_medium: UTM.utm_medium || '', utm_campaign: UTM.utm_campaign || '', utm_content: UTM.utm_content || '',
     pagina: location.href.split('#')[0], referrer: document.referrer || ''};
 }

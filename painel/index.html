@@ -127,6 +127,15 @@ main{display:grid;gap:20px;padding-block:24px 64px}
 .hbar .fill{height:100%;border-radius:4px;background:var(--accent)}
 .split{display:grid;gap:24px}
 .funnel{display:grid;gap:10px}
+.ab{width:100%;border-collapse:collapse;font-size:14px}
+.ab th,.ab td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.ab th:first-child,.ab td:first-child{text-align:left;white-space:normal}
+.ab thead th{font-size:12px;color:var(--muted);font-weight:600}
+.ab td small{display:block;color:var(--muted);font-size:12px}
+.ab tr.key td{font-weight:700}
+.ab .win{color:var(--good)}
+.ab-note{margin:12px 0 0;padding:10px 12px;border-radius:10px;background:var(--sunken);color:var(--muted);font-size:13.5px}
+.ab-note.ok{background:var(--good-soft);color:var(--ink)}
 .fstep{display:grid;grid-template-columns:minmax(150px,220px) minmax(0,1fr) auto;gap:14px;align-items:center}
 .fstep .fl{font-size:14.5px}
 .fstep .fl small{display:block;color:var(--muted);font-size:12.5px}
@@ -258,6 +267,14 @@ td.c-src,td.c-when{white-space:nowrap}
         <div><h2 id="h-call">Pra chamar agora</h2><p class="hint">Deixaram o WhatsApp no site nos últimos 7 dias mas não mandaram mensagem. Quanto antes, maior a chance.</p></div>
       </div>
       <div class="call-list" id="call-list"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-ab" id="ab-panel" hidden>
+      <div class="panel-head">
+        <div><h2 id="h-ab">Teste A/B da página</h2><p class="hint">Metade das visitas vê a versão A (completa) e metade a B (curta). Aqui fica qual delas traz mais contato.</p></div>
+      </div>
+      <div style="overflow-x:auto"><table class="ab" id="ab-table"></table></div>
+      <p class="ab-note" id="ab-note"></p>
     </section>
 
     <section class="panel" aria-labelledby="h-funil">
@@ -398,7 +415,7 @@ td.c-src,td.c-when{white-space:nowrap}
     return sb.from('leads').select('id,lead_id,criado_em,etapa,status,nome,whatsapp,interesse,pessoas,data_desejada,idioma,utm_source,utm_medium,utm_campaign,referrer,extra')
       .eq('cliente_id',state.client.id).gte('criado_em',since).order('criado_em',{ascending:false}).limit(2000)
       .then(function(r){ if(r.error){toast('Não consegui carregar os leads. Atualize a página.'); return;} state.leads=r.data||[];
-        return sb.from('eventos').select('tipo,sessao,alvo,utm_source,utm_medium,referrer,criado_em').eq('cliente_id',state.client.id).gte('criado_em',since).limit(20000)
+        return sb.from('eventos').select('tipo,sessao,alvo,utm_source,utm_medium,referrer,criado_em,variante').eq('cliente_id',state.client.id).gte('criado_em',since).limit(20000)
           .then(function(e){ state.events=(e&&!e.error&&e.data)||[]; render(); }); });
   }
 
@@ -412,7 +429,7 @@ td.c-src,td.c-when{white-space:nowrap}
     $('k-sent').textContent=sent; $('k-sent-sub').textContent=pct(sent,total)+' dos leads';
     $('k-miss').textContent=miss; $('k-miss-sub').textContent=pct(miss,total)+' dos leads';
     $('k-won').textContent=won; $('k-won-sub').textContent=pct(won,total)+' viraram reserva';
-    renderCall(); renderFunnel(); renderUso(); renderChart(); renderBars(); renderTable();
+    renderCall(); renderAB(); renderFunnel(); renderUso(); renderChart(); renderBars(); renderTable();
   }
   function renderCall(){
     var lim=Date.now()-7*864e5, c=state.leads.filter(function(l){return l.etapa==='so_preencheu'&&l.status==='novo'&&new Date(l.criado_em)>=lim;}).slice(0,6);
@@ -497,6 +514,35 @@ td.c-src,td.c-when{white-space:nowrap}
     state.leads.forEach(function(l){ var o=origin(l); s[o]=(s[o]||0)+1; var i=(l.interesse||'Não informado').replace(/\s*\(privativo\)/,''); it[i]=(it[i]||0)+1; });
     bars('src-bars',s); bars('int-bars',it);
   }
+
+  /* ---------- teste A/B ---------- */
+  function renderAB(){
+    var E=(state.events||[]).filter(function(e){return e.variante;}), L=state.leads||[];
+    $('ab-panel').hidden=!E.length; if(!E.length) return;
+    var V=['a','b'], d={};
+    V.forEach(function(v){
+      function sess(f){ var o={}; E.forEach(function(e){ if(e.variante===v&&f(e)) o[e.sessao]=1; }); return Object.keys(o).length; }
+      var lv=L.filter(function(l){return (l.extra||{}).variante===v;});
+      d[v]={vis:sess(function(e){return e.tipo==='visita';}), frm:sess(function(e){return e.tipo==='form_aberto';}),
+        fim:sess(function(e){return e.tipo==='rolagem'&&(e.alvo==='75%'||e.alvo==='100%');}),
+        lead:lv.length, sent:lv.filter(function(l){return l.etapa==='abriu_whatsapp';}).length, won:lv.filter(function(l){return l.status==='fechou';}).length};
+    });
+    function rate(n,v){ return d[v].vis?(n/d[v].vis*100):0; }
+    function cell(n,v,key){ var r=rate(n,v), o=v==='a'?'b':'a', ro=rate(key==='vis'?0:d[o][key],o);
+      var win=key!=='vis'&&d.a.vis&&d.b.vis&&r>ro;
+      return '<td'+(win?' class="win"':'')+'>'+n+(key==='vis'?'':'<small>'+(d[v].vis?r.toFixed(1).replace('.',',')+'% das visitas':'')+'</small>')+'</td>'; }
+    var rows=[['Visitas','vis'],['Abriram o formulário','frm'],['Deixaram o WhatsApp','lead'],['Mandaram mensagem','sent'],['Fecharam','won']];
+    $('ab-table').innerHTML='<thead><tr><th></th><th>A · completa</th><th>B · curta</th></tr></thead><tbody>'+rows.map(function(r){
+      return '<tr'+(r[1]==='lead'?' class="key"':'')+'><td>'+r[0]+'</td>'+cell(d.a[r[1]],'a',r[1])+cell(d.b[r[1]],'b',r[1])+'</tr>'; }).join('')+'</tbody>';
+    // a conta que importa: % das visitas que viraram lead, com teste de duas proporções
+    var na=d.a.vis, nb=d.b.vis, xa=d.a.lead, xb=d.b.lead, note=$('ab-note'), MIN=100;
+    note.className='ab-note';
+    if(na<MIN||nb<MIN){ note.textContent='Ainda é cedo pra decidir: cada versão precisa de pelo menos '+MIN+' visitas (agora: A '+na+', B '+nb+'). Com pouca gente, a diferença pode ser sorte.'; return; }
+    var p=(xa+xb)/(na+nb), se=Math.sqrt(p*(1-p)*(1/na+1/nb)), z=se?Math.abs(xa/na-xb/nb)/se:0;
+    var lider=xa/na>=xb/nb?'A':'B';
+    if(z>=1.96){ note.className='ab-note ok'; note.textContent='A versão '+lider+' converte mais em lead, e a diferença já é grande o bastante pra não ser sorte (95% de confiança).'; }
+    else note.textContent='A versão '+lider+' está na frente, mas a diferença ainda pode ser sorte. Vale esperar mais visitas antes de decidir.';
+  }
   /* ---------- funil: acesso, clique, formulário, WhatsApp ---------- */
   var ALVO={topo:'Botão do topo',menu:'Botão do menu',preco:'Botão do preço',final:'Botão do final da página',flutuante:'Botão flutuante (celular)',outro:'Outro botão'};
   function renderFunnel(){
@@ -549,7 +595,7 @@ td.c-src,td.c-when{white-space:nowrap}
 
   /* campos extras do formulário de cada nicho (convênio, horário, tem site...) */
   function rotulo(k){ k=String(k).replace(/[_-]+/g,' ').trim(); return k.charAt(0).toUpperCase()+k.slice(1); }
-  function extraTxt(l){ var e=l.extra||{}; return Object.keys(e).filter(function(k){return e[k]!==''&&e[k]!=null;}).map(function(k){ return (k==='site'?'':rotulo(k)+': ')+e[k]; }).join(' · '); }
+  function extraTxt(l){ var e=l.extra||{}; return Object.keys(e).filter(function(k){return k!=='variante'&&e[k]!==''&&e[k]!=null;}).map(function(k){ return (k==='site'?'':rotulo(k)+': ')+e[k]; }).join(' · '); }
   function extraHtml(l){ var t=extraTxt(l); return t?'<br><span class="xtra">'+esc(t)+'</span>':''; }
   var ST={novo:'Novo',em_conversa:'Em conversa',fechou:'Fechou',perdeu:'Perdeu'};
   function filtered(){
