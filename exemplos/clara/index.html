@@ -1,0 +1,947 @@
+<!DOCTYPE html><html lang="pt-BR" data-lang="pt"><head><meta charset="utf-8"><style rel="stylesheet" type="text/css">@charset "utf-8";
+
+@font-face { font-family: Fraunces; src: url("/exemplos/clara/fonts/fraunces-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+
+@font-face { font-family: Figtree; src: url("/exemplos/clara/fonts/figtree-latin-wght-normal.woff2") format("woff2"); font-weight: 300 900; font-display: swap; }
+
+@font-face { font-family: Figtree; src: url("/exemplos/clara/fonts/figtree-latin-ext-wght-normal.woff2") format("woff2"); font-weight: 300 900; font-display: swap; unicode-range: U+100-2AF, U+1E00-1EFF; }
+
+:root { --bg: #fbf6ef; --surface: #ffffff; --ink: #24182f; --muted: #5e5466; --line: #eadfd2; --purple: #8e2477; --purple-soft: #f8e6f2; --pink: #d64aad; --orange: #e8692c; --orange-ink: #b4481a; --orange-soft: #fdeadf; --wa: #1f8f4e; }
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body { margin: 0px; background: var(--bg); color: var(--ink); font-family: Figtree, system-ui, sans-serif; font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+
+img { display: block; max-width: 100%; }
+
+a { color: var(--purple); }
+
+h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 600; line-height: 1.08; margin: 0px; letter-spacing: -0.01em; }
+
+.wrap { max-width: 1120px; margin: 0px auto; padding: 0px 20px; }
+
+html[data-lang="pt"] [lang="en"], html[data-lang="en"] [lang="pt"] { display: none !important; }
+
+.top { position: sticky; top: 0px; z-index: 20; background: rgba(251, 246, 239, 0.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+
+.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+
+.brand { font-family: Fraunces, Georgia, serif; font-weight: 700; font-size: 20px; color: var(--ink); text-decoration: none; }
+
+.brand span { color: var(--orange); }
+
+.lang { display: flex; border: 1.5px solid var(--purple); border-radius: 999px; overflow: hidden; }
+
+.lang button { border: 0px; background: transparent; color: var(--purple); font: 700 13px Figtree, sans-serif; padding: 7px 12px; cursor: pointer; min-width: 44px; }
+
+.lang button[aria-pressed="true"] { background: var(--purple); color: rgb(255, 255, 255); }
+
+.hero { position: relative; min-height: min(88svh, 760px); display: flex; align-items: flex-end; color: rgb(255, 255, 255); overflow: hidden; }
+
+.hero img { position: absolute; inset: 0px; width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; }
+
+.hero::after { content: ""; position: absolute; inset: 0px; background: linear-gradient(rgba(36, 24, 47, 0.05) 30%, rgba(36, 24, 47, 0.82) 100%); }
+
+.hero .wrap { position: relative; z-index: 1; padding-bottom: 48px; padding-top: 120px; width: 100%; }
+
+.hero .kicker { display: inline-block; background: var(--purple); color: rgb(255, 255, 255); font-weight: 700; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; margin-bottom: 16px; }
+
+.hero h1 { font-size: clamp(36px, 8.4vw, 72px); max-width: 760px; text-wrap: balance; }
+
+.hero p { font-size: 19px; max-width: 560px; margin: 16px 0px 26px; color: rgb(244, 236, 248); }
+
+.btns { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 52px; padding: 0px 24px; border-radius: 999px; font-weight: 700; font-size: 16px; text-decoration: none; border: 0px; cursor: pointer; }
+
+.btn-wa { background: var(--wa); color: rgb(255, 255, 255); }
+
+.btn-wa:hover { background: rgb(24, 116, 63); }
+
+.btn-light { background: rgb(255, 255, 255); color: var(--purple); }
+
+.btn-light:hover { background: var(--purple-soft); }
+
+.btn svg { flex-shrink: 0; }
+
+.trust { background: var(--purple); color: rgb(255, 255, 255); }
+
+.trust .wrap { display: grid; grid-template-columns: repeat(3, minmax(0px, 1fr)); gap: 12px; padding-top: 22px; padding-bottom: 22px; text-align: center; }
+
+.trust b { display: block; font-family: Fraunces, Georgia, serif; font-size: 26px; line-height: 1.1; }
+
+.trust span { font-size: 13.5px; color: rgb(246, 220, 239); }
+
+.trust b span { font-size: inherit; color: inherit; }
+
+section.block { padding: 72px 0px; }
+
+.eyebrow { font-weight: 700; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--orange-ink); margin-bottom: 10px; }
+
+.sec-title { font-size: clamp(30px, 5.6vw, 46px); margin-bottom: 12px; text-wrap: balance; }
+
+.sec-lead { color: var(--muted); max-width: 640px; margin: 0px 0px 26px; }
+
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin: 0px -20px 26px; padding-left: 20px; padding-right: 20px; scrollbar-width: none; }
+
+.chips::-webkit-scrollbar { display: none; }
+
+.chips button { flex-shrink: 0; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); font: 600 15px Figtree, sans-serif; padding: 10px 16px; border-radius: 999px; cursor: pointer; min-height: 44px; }
+
+.chips button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: rgb(255, 255, 255); }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
+
+.car { position: relative; }
+
+.car-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; aspect-ratio: 1 / 1; background: var(--line); }
+
+.car-track::-webkit-scrollbar { display: none; }
+
+.car-track img { flex: 0 0 100%; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; scroll-snap-align: start; scroll-snap-stop: always; }
+
+.car-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 0px; background: rgba(255, 255, 255, 0.92); color: var(--ink); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 10px; }
+
+.car-btn.prev { left: 10px; }
+
+.car-btn.next { right: 10px; }
+
+.car-btn[disabled] { opacity: 0; pointer-events: none; }
+
+.dots { position: absolute; left: 0px; right: 0px; bottom: 10px; display: flex; justify-content: center; gap: 6px; pointer-events: none; }
+
+.dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.55); box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 3px; }
+
+.dots i.on { background: rgb(255, 255, 255); width: 18px; border-radius: 4px; }
+
+.count { position: absolute; top: 10px; right: 10px; background: rgba(36, 24, 47, 0.7); color: rgb(255, 255, 255); font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+
+@media (hover: none) {
+  .car-btn { display: none; }
+}
+
+.card .body { padding: 20px; display: flex; flex-direction: column; gap: 12px; flex: 1 1 0%; }
+
+.cat { align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--purple); background: var(--purple-soft); padding: 4px 10px; border-radius: 999px; }
+
+.card h3 { font-size: 25px; }
+
+.card p { margin: 0px; color: var(--muted); font-size: 15.5px; }
+
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 0px; padding: 0px; list-style: none; }
+
+.meta li { font-size: 13.5px; font-weight: 600; background: var(--orange-soft); color: var(--orange-ink); padding: 5px 10px; border-radius: 8px; }
+
+details { border-top: 1px solid var(--line); padding-top: 10px; }
+
+summary { cursor: pointer; font-weight: 700; font-size: 15px; color: var(--purple); list-style: none; display: flex; align-items: center; justify-content: space-between; min-height: 36px; }
+
+summary::-webkit-details-marker { display: none; }
+
+summary::after { content: "+"; font-size: 22px; font-weight: 500; }
+
+details[open] summary::after { content: "–"; }
+
+.dt { margin-top: 8px; display: flex; flex-direction: column; gap: 12px; }
+
+.dt h4 { margin: 0px 0px 3px; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); }
+
+.dt ul { margin: 0px; padding-left: 18px; font-size: 15px; color: var(--muted); }
+
+.dt li { margin-bottom: 2px; }
+
+.price { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 6px; }
+
+.price b { font-family: Fraunces, Georgia, serif; font-size: 30px; color: var(--ink); }
+
+.price small { display: block; font-size: 13px; color: var(--muted); }
+
+.card .btn { width: 100%; }
+
+.gallery { padding: 0px 0px 72px; }
+
+.strip { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(220px, 1fr); gap: 12px; overflow-x: auto; padding: 0px 20px 8px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+
+.strip::-webkit-scrollbar { display: none; }
+
+.strip img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 18px; scroll-snap-align: start; }
+
+@media (min-width: 1160px) {
+  .strip { max-width: 1120px; margin: 0px auto; padding: 0px 20px; grid-auto-columns: 1fr; }
+}
+
+.reserve { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 32px; }
+
+.step { background: var(--bg); border-radius: 18px; padding: 22px; }
+
+.step .n { width: 40px; height: 40px; border-radius: 50%; background: var(--orange); color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: center; font-family: Fraunces, Georgia, serif; font-weight: 700; font-size: 20px; margin-bottom: 12px; }
+
+.step h3 { font-size: 21px; margin-bottom: 6px; }
+
+.step p { margin: 0px; color: var(--muted); font-size: 15.5px; }
+
+.pay h3 { font-size: 22px; margin-bottom: 12px; }
+
+.pay ul { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0px; padding: 0px; }
+
+.pay li { border: 1.5px solid var(--purple); color: var(--purple); font-weight: 700; font-size: 15px; padding: 8px 14px; border-radius: 999px; }
+
+.about .wrap { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: center; }
+
+.about img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: 60% 50%; border-radius: 24px; }
+
+.about h2 { font-size: clamp(32px, 6vw, 48px); margin-bottom: 16px; }
+
+.about p { margin: 0px 0px 14px; color: var(--muted); font-size: 18px; }
+
+.badge { display: inline-flex; flex-direction: column; gap: 2px; background: var(--purple-soft); border-radius: 14px; padding: 12px 16px; margin: 6px 0px 18px; }
+
+.badge small { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--purple); }
+
+.badge b { font-size: 17px; }
+
+.big { font-family: Fraunces, Georgia, serif; font-size: 26px; color: var(--orange-ink); margin: 4px 0px 10px; }
+
+.sign { font-family: Fraunces, Georgia, serif; font-style: italic; font-size: 24px; color: var(--purple); }
+
+footer { background: var(--ink); color: rgb(233, 226, 239); padding: 56px 0px 100px; }
+
+footer h2 { font-size: 32px; color: rgb(255, 255, 255); margin-bottom: 8px; }
+
+footer p { color: rgb(201, 191, 211); margin: 0px 0px 22px; }
+
+.links { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 30px; }
+
+.links a { display: flex; align-items: center; gap: 12px; color: rgb(255, 255, 255); text-decoration: none; border: 1px solid rgb(74, 61, 87); border-radius: 14px; padding: 14px 16px; min-height: 56px; font-weight: 600; }
+
+.links a:hover { border-color: var(--orange); }
+
+.links small { display: block; font-weight: 500; color: rgb(183, 171, 196); font-size: 13px; }
+
+.legal { font-size: 13px; color: rgb(169, 157, 182); }
+
+.credit { margin-top: 10px; font-size: 13px; color: rgb(169, 157, 182); }
+
+.credit a { color: rgb(255, 255, 255); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+.credit a:hover { color: var(--orange); }
+
+.fab { position: fixed; right: 16px; bottom: 16px; z-index: 30; width: 58px; height: 58px; border-radius: 50%; background: var(--wa); display: flex; align-items: center; justify-content: center; box-shadow: rgba(0, 0, 0, 0.25) 0px 6px 20px; }
+
+@media (min-width: 860px) {
+  .about .wrap { grid-template-columns: 5fr 6fr; gap: 56px; }
+  .trust b { font-size: 32px; }
+  section.block { padding: 96px 0px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+@font-face { font-family: Fraunces; src: url("/exemplos/clara/fonts/fraunces-latin-ext-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-display: swap; unicode-range: U+100-2AF, U+1E00-1EFF; }
+[hidden] { display: none !important; }
+/* faixa de exemplo da Linxio */
+.demo-bar { background: var(--ink); color: #e9e2ef; font-size: 14px; line-height: 1.4; }
+.demo-bar .wrap { display: flex; align-items: center; gap: 10px 14px; padding-top: 10px; padding-bottom: 10px; flex-wrap: wrap; }
+.demo-tag { background: #1F6FB2; color: #fff; font-weight: 700; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; border-radius: 6px; padding: 3px 8px; }
+.demo-bar a { color: #fff; font-weight: 700; margin-left: auto; white-space: nowrap; }
+@media (max-width: 640px) { .demo-bar { font-size: 13px; } .demo-bar a { margin-left: 0; } }
+/* formulário antes do WhatsApp */
+.lead-modal { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; overflow-y: auto; padding: 16px; background: rgba(36, 24, 47, .62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); opacity: 0; transition: opacity .2s; }
+.lead-modal.open { opacity: 1; }
+.lead-box { position: relative; width: min(100%, 460px); margin-block: auto; background: var(--surface); border-radius: 22px; padding: 30px 24px 22px; display: grid; gap: 14px; box-shadow: 0 30px 80px -30px rgba(36, 24, 47, .6); transform: translateY(10px); transition: transform .25s cubic-bezier(.2, .8, .2, 1); }
+.lead-modal.open .lead-box { transform: none; }
+.lead-box h2 { font-size: clamp(24px, 3vw, 28px); padding-right: 40px; color: var(--purple); }
+.lead-box > p { margin: 0; color: var(--muted); font-size: 15px; }
+.lf { display: grid; gap: 5px; min-width: 0; }
+.lf label { font-size: 14px; font-weight: 700; }
+.lf input, .lf select { width: 100%; font: inherit; font-size: 16px; color: var(--ink); background: var(--bg); border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 13px; min-height: 48px; }
+.lf input:focus, .lf select:focus { outline: 2px solid var(--purple); outline-offset: 0; border-color: transparent; }
+.lf input[aria-invalid="true"] { border-color: var(--orange); }
+.lf-row { display: grid; grid-template-columns: 1fr 1.4fr; gap: 12px; }
+.lead-err { margin: 0; color: var(--orange-ink); font-size: 14px; font-weight: 600; }
+.lead-box .btn { width: 100%; }
+.lead-note { margin: 0; color: var(--muted); font-size: 12.5px; text-align: center; }
+.lead-close { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--purple-soft); color: var(--purple); display: grid; place-items: center; cursor: pointer; }
+html.locked, html.locked body { overflow: hidden; }
+
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clara Trilhas RJ · Exemplo Linxio</title>
+<meta name="description" content="Trilhas, tours nas favelas, SUP e city tour no Rio de Janeiro com a Clara, guia de turismo credenciada no Cadastur. Morro Dois Irmãos, Pedra da Gávea, Pedra Bonita, Vidigal, Rocinha e mais.">
+<meta property="og:title" content="Clara Trilhas RJ · Passeios no Rio de Janeiro">
+<meta property="og:description" content="Os melhores e mais autênticos passeios no Rio de Janeiro, com guia credenciada no Cadastur.">
+<meta property="og:image" content="https://claratrilhasrj.vercel.app/img/hero.webp">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#8e2477">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://claratrilhasrj.vercel.app/">
+<link rel="preload" as="image" href="https://claratrilhasrj.vercel.app/img/hero.webp">
+
+</head>
+<body>
+<div class="demo-bar" role="note">
+  <div class="wrap">
+    <span class="demo-tag">Linxio</span>
+    <span><span lang="pt">Página de exemplo: o site da Clara com formulário, painel de contatos e avisos no WhatsApp.</span><span lang="en">Demo page: Clara's website with a contact form, leads dashboard and WhatsApp alerts.</span></span>
+    <a href="https://linxio.com.br/"><span lang="pt">Voltar pra Linxio</span><span lang="en">Back to Linxio</span></a>
+  </div>
+</div>
+
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#inicio">Clara<span>.</span>Trilhas RJ</a>
+    <div class="lang" role="group" aria-label="Idioma / Language">
+      <button type="button" data-set-lang="pt" aria-pressed="false">PT</button>
+      <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+    </div>
+  </div>
+</header>
+
+<main id="inicio">
+<section class="hero">
+  <img src="https://claratrilhasrj.vercel.app/img/hero.webp" alt="Nascer do sol no Rio de Janeiro visto do alto de uma trilha" fetchpriority="high">
+  <div class="wrap">
+    <span class="kicker"><span lang="pt">Guia credenciada · Cadastur</span><span lang="en">Licensed tour guide · Cadastur</span></span>
+    <h1><span lang="pt">Os melhores e mais autênticos passeios no Rio de Janeiro você encontra aqui</span><span lang="en">The best and most authentic experiences in Rio de Janeiro are right here</span></h1>
+    <p><span lang="pt">Trilhas, favelas, mar e cidade, com quem vive o Rio todos os dias.</span><span lang="en">Hikes, favela tours, the ocean and the city, with someone who lives Rio every day.</span></p>
+    <div class="btns">
+      <a class="btn btn-light" href="#passeios"><span lang="pt">Ver passeios</span><span lang="en">See experiences</span></a>
+      <a class="btn btn-wa" data-wa="" href="#reservar-agora">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 20.5l1.8-5.2A8.4 8.4 0 1 1 21 11.5z"></path></svg>
+        <span lang="pt">Falar no WhatsApp</span><span lang="en">Chat on WhatsApp</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="trust">
+  <div class="wrap">
+    <div><b>+2.000</b><span lang="pt">viajantes guiados</span><span lang="en">travelers guided</span></div>
+    <div><b><span lang="pt">3 anos</span><span lang="en">3 years</span></b><span lang="pt">guiando no Rio</span><span lang="en">guiding in Rio</span></div>
+    <div><b>Cadastur</b><span lang="pt">Ministério do Turismo</span><span lang="en">Ministry of Tourism</span></div>
+  </div>
+</div>
+
+<section class="block" id="passeios">
+  <div class="wrap">
+    <div class="eyebrow"><span lang="pt">Experiências</span><span lang="en">Experiences</span></div>
+    <h2 class="sec-title"><span lang="pt">Escolha o seu destino favorito no Rio</span><span lang="en">Choose your favorite spot in Rio</span></h2>
+    <p class="sec-lead"><span lang="pt">Toque em "Ver detalhes" para horários, o que está incluso e o ponto de encontro. Para reservar, é só chamar no WhatsApp.</span><span lang="en">Tap "See details" for times, what's included and the meeting point. To book, just send a WhatsApp message.</span></p>
+    <div class="chips" role="group" aria-label="Filtro">
+      <button type="button" data-filter="all" aria-pressed="true"><span lang="pt">Todos</span><span lang="en">All</span></button>
+      <button type="button" data-filter="trilha" aria-pressed="false"><span lang="pt">Trilhas</span><span lang="en">Hikes</span></button>
+      <button type="button" data-filter="favela" aria-pressed="false"><span lang="pt">Favelas</span><span lang="en">Favela tours</span></button>
+      <button type="button" data-filter="mar" aria-pressed="false"><span lang="pt">No mar</span><span lang="en">On the water</span></button>
+      <button type="button" data-filter="cidade" aria-pressed="false">City tour</button>
+    </div>
+    <div class="grid" id="tours"><article class="card">
+      <div class="car" data-car="">
+        <div class="car-track"><img src="https://claratrilhasrj.vercel.app/img/dois-irmaos-1.webp" alt="Dois Irmãos Hill 1/4" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/dois-irmaos-2.webp" alt="Dois Irmãos Hill 2/4" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/dois-irmaos-3.webp" alt="Dois Irmãos Hill 3/4" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/dois-irmaos-4.webp" alt="Dois Irmãos Hill 4/4" loading="lazy" draggable="false"></div>
+        <button type="button" class="car-btn prev" aria-label="Previous photo" disabled=""><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+        <button type="button" class="car-btn next" aria-label="Next photo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></button>
+        <div class="dots"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></div>
+        <span class="count">1/4</span>
+      </div>
+      <div class="body">
+        <span class="cat">Hike</span>
+        <h3>Dois Irmãos Hill</h3>
+        <p>A rock formation in Vidigal rising 533 meters above the sea, reached by a 1.5 km trail. Daily departures, including sunrise and sunset.</p>
+        <ul class="meta"><li>3 km round trip</li><li>Hike: ~2h</li><li>Tour: ~4h</li></ul>
+        <details><summary>See details</summary><div class="dt"><div><h4>Times</h4><ul><li>Daily</li><li>Sunrise: meet at 3am</li><li>8am, 9am or 10am</li><li>Sunset: meet at 3pm</li></ul></div><div><h4>Included</h4><ul><li>Guide</li><li>Photos and videos</li></ul></div><div><h4>Not included</h4><ul><li>Motorcycle taxi: R$ 7</li><li>Trail entrance fee: R$ 10</li></ul></div><div><h4>Meeting point</h4><ul><li>Vidigal Square (Praça do Vidigal)</li></ul></div><div><a href="http://bit.ly/pcvidigal" target="_blank" rel="noopener">Open map</a></div></div></details>
+        <div class="price"><div><b>R$ 180</b></div></div>
+        <a class="btn btn-wa" href="#reservar-agora">Book on WhatsApp</a>
+      </div>
+    </article><article class="card">
+      <div class="car" data-car="">
+        <div class="car-track"><img src="https://claratrilhasrj.vercel.app/img/pedra-da-gavea-1.webp" alt="Pedra da Gávea 1/6" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/pedra-da-gavea-2.webp" alt="Pedra da Gávea 2/6" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/pedra-da-gavea-3.webp" alt="Pedra da Gávea 3/6" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/pedra-da-gavea-4.webp" alt="Pedra da Gávea 4/6" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/pedra-da-gavea-5.webp" alt="Pedra da Gávea 5/6" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/pedra-da-gavea-6.webp" alt="Pedra da Gávea 6/6" loading="lazy" draggable="false"></div>
+        <button type="button" class="car-btn prev" aria-label="Previous photo" disabled=""><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+        <button type="button" class="car-btn next" aria-label="Next photo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></button>
+        <div class="dots"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div>
+        <span class="count">1/6</span>
+      </div>
+      <div class="body">
+        <span class="cat">Hike</span>
+        <h3>Pedra da Gávea</h3>
+        <p>One of the most challenging hikes in Rio, passing Sorimã Waterfall, Pedra do Navio, the rock wall, Carrasqueira and the summit plateau.</p>
+        <ul class="meta"><li>8 km round trip</li><li>Level: hard</li><li>Total: ~7h</li></ul>
+        <details><summary>See details</summary><div class="dt"><div><h4>Times</h4><ul><li>Daily</li><li>Meet at 7:40am</li></ul></div><div><h4>Included</h4><ul><li>Guide and safety equipment</li><li>Photos taken with iPhone</li></ul></div><div><h4>Optional</h4><ul><li>Drone video: R$ 80</li></ul></div><div><h4>Route</h4><ul><li>Sorimã Waterfall</li><li>Pedra do Navio</li><li>Rock wall (Casca)</li><li>Carrasqueira</li><li>Summit plateau</li></ul></div><div><h4>Meeting point</h4><ul><li>Estrada Sorimã, 932, Itanhangá</li></ul></div></div></details>
+        <div class="price"><div><b>R$ 200</b></div></div>
+        <a class="btn btn-wa" href="#reservar-agora">Book on WhatsApp</a>
+      </div>
+    </article><article class="card">
+      <div class="car" data-car="">
+        <div class="car-track"><img src="https://claratrilhasrj.vercel.app/img/garganta-do-ceu-1.webp" alt="Garganta do Céu 1/3" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/garganta-do-ceu-2.webp" alt="Garganta do Céu 2/3" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/garganta-do-ceu-3.webp" alt="Garganta do Céu 3/3" loading="lazy" draggable="false"></div>
+        <button type="button" class="car-btn prev" aria-label="Previous photo" disabled=""><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+        <button type="button" class="car-btn next" aria-label="Next photo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></button>
+        <div class="dots"><i class="on"></i><i class=""></i><i class=""></i></div>
+        <span class="count">1/3</span>
+      </div>
+      <div class="body">
+        <span class="cat">Hike</span>
+        <h3>Garganta do Céu</h3>
+        <p>On the south face of Pedra da Gávea, a natural rock frame and viewpoint with a unique angle over São Conrado beach and Dois Irmãos Hill.</p>
+        <ul class="meta"><li>2 km</li><li>Hike: ~1h30 (one way)</li><li>Level: moderate</li><li>635 m</li></ul>
+        <details><summary>See details</summary><div class="dt"><div><h4>Included</h4><ul><li>Guide</li><li>Photos</li></ul></div><div><h4>Meeting point</h4><ul><li>Estrada Sorimã, 932</li></ul></div></div></details>
+        <div class="price"><div><b>R$ 180</b><small>per person</small></div></div>
+        <a class="btn btn-wa" href="#reservar-agora">Book on WhatsApp</a>
+      </div>
+    </article><article class="card">
+      <div class="car" data-car="">
+        <div class="car-track"><img src="https://claratrilhasrj.vercel.app/img/pedra-bonita-1.webp" alt="Pedra Bonita 1/3" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/pedra-bonita-2.webp" alt="Pedra Bonita 2/3" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/pedra-bonita-3.webp" alt="Pedra Bonita 3/3" loading="lazy" draggable="false"></div>
+        <button type="button" class="car-btn prev" aria-label="Previous photo" disabled=""><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+        <button type="button" class="car-btn next" aria-label="Next photo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></button>
+        <div class="dots"><i class="on"></i><i class=""></i><i class=""></i></div>
+        <span class="count">1/3</span>
+      </div>
+      <div class="body">
+        <span class="cat">Hike</span>
+        <h3>Pedra Bonita</h3>
+        <p>Stunning views after a 30 to 40 minute climb. An easy trail with no major obstacles, great for beginners.</p>
+        <ul class="meta"><li>Climb: 30 to 40 min</li><li>Level: easy</li><li>Duration: 4h</li></ul>
+        <details><summary>See details</summary><div class="dt"><div><h4>Times</h4><ul><li>9am, 11am or 1pm</li></ul></div><div><h4>Included</h4><ul><li>Licensed guide (Cadastur)</li><li>Photos and videos</li></ul></div><div><h4>Not included</h4><ul><li>Food</li><li>Personal expenses</li></ul></div><div><h4>Meeting point</h4><ul><li>Estrada da Pedra Bonita, 740</li></ul></div></div></details>
+        <div class="price"><div><b>R$ 180</b><small>per person</small></div></div>
+        <a class="btn btn-wa" href="#reservar-agora">Book on WhatsApp</a>
+      </div>
+    </article><article class="card">
+      <div class="car" data-car="">
+        <div class="car-track"><img src="https://claratrilhasrj.vercel.app/img/pedra-do-telegrafo-1.webp" alt="Pedra do Telégrafo 1/3" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/pedra-do-telegrafo-2.webp" alt="Pedra do Telégrafo 2/3" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/pedra-do-telegrafo-3.webp" alt="Pedra do Telégrafo 3/3" loading="lazy" draggable="false"></div>
+        <button type="button" class="car-btn prev" aria-label="Previous photo" disabled=""><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+        <button type="button" class="car-btn next" aria-label="Next photo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></button>
+        <div class="dots"><i class="on"></i><i class=""></i><i class=""></i></div>
+        <span class="count">1/3</span>
+      </div>
+      <div class="body">
+        <span class="cat">Hike</span>
+        <h3>Pedra do Telégrafo</h3>
+        <p>In Pedra Branca State Park, Barra de Guaratiba. Once a WWII submarine lookout post, now famous for its viewpoints.</p>
+        <ul class="meta"><li>1.8 km</li><li>Hike: ~40 min (one way)</li><li>Level: easy</li><li>354 m</li></ul>
+        <details><summary>See details</summary><div class="dt"><div><h4>Included</h4><ul><li>Guide</li><li>Photos</li><li>Transfer (check availability for your accommodation)</li></ul></div></div></details>
+        <div class="price"><div><b>R$ 350</b><small>per person</small></div></div>
+        <a class="btn btn-wa" href="#reservar-agora">Book on WhatsApp</a>
+      </div>
+    </article><article class="card">
+      <div class="car" data-car="">
+        <div class="car-track"><img src="https://claratrilhasrj.vercel.app/img/vidigal-1.webp" alt="Immersive Vidigal Tour 1/5" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/vidigal-2.webp" alt="Immersive Vidigal Tour 2/5" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/vidigal-3.webp" alt="Immersive Vidigal Tour 3/5" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/vidigal-4.webp" alt="Immersive Vidigal Tour 4/5" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/vidigal-5.webp" alt="Immersive Vidigal Tour 5/5" loading="lazy" draggable="false"></div>
+        <button type="button" class="car-btn prev" aria-label="Previous photo" disabled=""><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+        <button type="button" class="car-btn next" aria-label="Next photo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></button>
+        <div class="dots"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div>
+        <span class="count">1/5</span>
+      </div>
+      <div class="body">
+        <span class="cat">Favela tour</span>
+        <h3>Immersive Vidigal Tour</h3>
+        <p>An authentic walk through the alleys of Vidigal with a local guide, connecting you with the culture, history and daily life of the community.</p>
+        <ul class="meta"><li>Duration: 2h</li><li>Photos included</li></ul>
+        <details><summary>See details</summary><div class="dt"><div><h4>What you will experience</h4><ul><li>Social and cultural projects</li><li>Colorful, photogenic alleys</li><li>Traditional bars and spots</li><li>Meeting local residents</li><li>An amazing view of Rio</li><li>Photos at the best spots</li></ul></div><div><h4>Not included</h4><ul><li>Motorcycle taxi: R$ 10</li></ul></div><div><h4>Location</h4><ul><li>Vidigal favela</li></ul></div></div></details>
+        <div class="price"><div><b>R$ 180</b><small>per person</small></div></div>
+        <a class="btn btn-wa" href="#reservar-agora">Book on WhatsApp</a>
+      </div>
+    </article><article class="card">
+      <div class="car" data-car="">
+        <div class="car-track"><img src="https://claratrilhasrj.vercel.app/img/rocinha-1.webp" alt="Rocinha Favela Tour 1/3" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/rocinha-2.webp" alt="Rocinha Favela Tour 2/3" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/rocinha-3.webp" alt="Rocinha Favela Tour 3/3" loading="lazy" draggable="false"></div>
+        <button type="button" class="car-btn prev" aria-label="Previous photo" disabled=""><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+        <button type="button" class="car-btn next" aria-label="Next photo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></button>
+        <div class="dots"><i class="on"></i><i class=""></i><i class=""></i></div>
+        <span class="count">1/3</span>
+      </div>
+      <div class="body">
+        <span class="cat">Favela tour</span>
+        <h3>Rocinha Favela Tour</h3>
+        <p>One of the largest favelas in Brazil, rich in history and culture, with breathtaking views. Any risk? Only of falling in love with the favela.</p>
+        <ul class="meta"><li>Duration: 2h30 to 3h</li><li>Daily departures</li></ul>
+        <details><summary>See details</summary><div class="dt"><div><h4>Times</h4><ul><li>9am or 2pm</li></ul></div><div><h4>Included</h4><ul><li>Tour guide born and raised in the favela</li><li>Photos and videos</li></ul></div><div><h4>Not included</h4><ul><li>Motorcycle taxi: R$ 10</li><li>Terraço Novo Visual: R$ 30</li><li>Laje Alto Visual: R$ 5</li></ul></div></div></details>
+        <div class="price"><div><b>R$ 180</b><small>per person</small></div></div>
+        <a class="btn btn-wa" href="#reservar-agora">Book on WhatsApp</a>
+      </div>
+    </article><article class="card">
+      <div class="car" data-car="">
+        <div class="car-track"><img src="https://claratrilhasrj.vercel.app/img/sup-1.webp" alt="Sunrise SUP in Copacabana 1/3" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/sup-2.webp" alt="Sunrise SUP in Copacabana 2/3" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/sup-3.webp" alt="Sunrise SUP in Copacabana 3/3" loading="lazy" draggable="false"></div>
+        <button type="button" class="car-btn prev" aria-label="Previous photo" disabled=""><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+        <button type="button" class="car-btn next" aria-label="Next photo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></button>
+        <div class="dots"><i class="on"></i><i class=""></i><i class=""></i></div>
+        <span class="count">1/3</span>
+      </div>
+      <div class="body">
+        <span class="cat">On the water</span>
+        <h3>Sunrise SUP in Copacabana</h3>
+        <p>One of Rio's most sought-after experiences: paddling in Copacabana as the sun comes up.</p>
+        <ul class="meta"><li>Check-in: 5am</li><li>Ends: 7am</li><li>Beginner friendly</li></ul>
+        <details><summary>See details</summary><div class="dt"><div><h4>Included</h4><ul><li>Photography</li><li>Board and life jacket</li><li>Locker</li><li>Beginner instruction</li><li>Professional guide throughout</li><li>Instruction in English and Spanish</li></ul></div><div><h4>Bonus</h4><ul><li>Photos with the board on the sand</li></ul></div></div></details>
+        <div class="price"><div><b>R$ 200</b><small>per person</small></div></div>
+        <a class="btn btn-wa" href="#reservar-agora">Book on WhatsApp</a>
+      </div>
+    </article><article class="card">
+      <div class="car" data-car="">
+        <div class="car-track"><img src="https://claratrilhasrj.vercel.app/img/city-tour-1.webp" alt="City Tour 1/4" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/city-tour-2.webp" alt="City Tour 2/4" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/city-tour-3.webp" alt="City Tour 3/4" loading="lazy" draggable="false"><img src="https://claratrilhasrj.vercel.app/img/city-tour-4.webp" alt="City Tour 4/4" loading="lazy" draggable="false"></div>
+        <button type="button" class="car-btn prev" aria-label="Previous photo" disabled=""><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg></button>
+        <button type="button" class="car-btn next" aria-label="Next photo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></button>
+        <div class="dots"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></div>
+        <span class="count">1/4</span>
+      </div>
+      <div class="body">
+        <span class="cat">City tour</span>
+        <h3>City Tour</h3>
+        <p>A tour of Rio tailored to you, with transportation. Tell me what you'd like to see and I'll put the day together.</p>
+        <ul class="meta"><li>Transportation included</li><li>Custom itinerary</li></ul>
+        
+        <div class="price"><div><small>from</small><b>R$ 400</b></div></div>
+        <a class="btn btn-wa" href="#reservar-agora">Book on WhatsApp</a>
+      </div>
+    </article></div>
+  </div>
+</section>
+
+<section class="gallery" aria-label="Momentos pelo Rio">
+  <div class="wrap"><div class="eyebrow"><span lang="pt">Momentos pelo Rio</span><span lang="en">Moments around Rio</span></div>
+  <h2 class="sec-title"><span lang="pt">Quem já passou por aqui</span><span lang="en">Travelers who joined me</span></h2></div>
+  <div class="strip">
+    <img src="https://claratrilhasrj.vercel.app/img/g1.webp" alt="Grupo comemorando no topo da Pedra da Gávea" loading="lazy">
+    <img src="https://claratrilhasrj.vercel.app/img/g6.webp" alt="Viajante na Garganta do Céu com vista para São Conrado" loading="lazy">
+    <img src="https://claratrilhasrj.vercel.app/img/g3.webp" alt="Viajante em frente ao Cristo Redentor" loading="lazy">
+    <img src="https://claratrilhasrj.vercel.app/img/g4.webp" alt="Viajante no mirante do Vidigal com vista para Ipanema e Leblon" loading="lazy">
+    <img src="https://claratrilhasrj.vercel.app/img/g5.webp" alt="Casal na Pedra do Telégrafo com vista para o mar" loading="lazy">
+    <img src="https://claratrilhasrj.vercel.app/img/g2.webp" alt="Viajante sorrindo com uma arara na cabeça" loading="lazy">
+  </div>
+</section>
+
+<section class="block reserve" id="reservar">
+  <div class="wrap">
+    <div class="eyebrow"><span lang="pt">Como reservar</span><span lang="en">How to book</span></div>
+    <h2 class="sec-title"><span lang="pt">Simples, direto pelo WhatsApp</span><span lang="en">Simple, straight through WhatsApp</span></h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3><span lang="pt">Escolha o passeio</span><span lang="en">Pick your experience</span></h3><p><span lang="pt">Toque em "Reservar" no passeio que você quer fazer.</span><span lang="en">Tap "Book" on the experience you want.</span></p></div>
+      <div class="step"><div class="n">2</div><h3><span lang="pt">Combine a data</span><span lang="en">Choose the date</span></h3><p><span lang="pt">A Clara confirma o dia, o horário e o número de pessoas.</span><span lang="en">Clara confirms the day, time and group size.</span></p></div>
+      <div class="step"><div class="n">3</div><h3><span lang="pt">Garanta sua vaga</span><span lang="en">Secure your spot</span></h3><p><span lang="pt">A reserva é feita com 50% do valor. O restante é pago na véspera do passeio.</span><span lang="en">Bookings are confirmed with a 50% deposit. The rest is paid the day before.</span></p></div>
+    </div>
+    <div class="pay">
+      <h3><span lang="pt">Formas de pagamento</span><span lang="en">Payment methods</span></h3>
+      <ul>
+        <li>Pix</li>
+        <li><span lang="pt">Cartão de crédito</span><span lang="en">Credit card</span></li>
+        <li>Wise</li>
+        <li>Revolut</li>
+        <li>PayPal</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="block about" id="sobre">
+  <div class="wrap">
+    <img src="https://claratrilhasrj.vercel.app/img/clara.webp" alt="Clara, guia de turismo no Rio de Janeiro" loading="lazy">
+    <div>
+      <div class="eyebrow"><span lang="pt">Quem vai te guiar</span><span lang="en">Your guide</span></div>
+      <h2><span lang="pt">Eu sou Clara</span><span lang="en">I'm Clara</span></h2>
+      <p><span lang="pt">Guia nacional, credenciada no Ministério do Turismo.</span><span lang="en">National tour guide, licensed by Brazil's Ministry of Tourism.</span></p>
+      <div class="badge"><small>Cadastur</small><b>19.289957.63-6</b></div>
+      <p><span lang="pt">Atuo há 3 anos no Rio de Janeiro, levando viajantes do mundo inteiro para viver as melhores e mais autênticas experiências pela cidade!</span><span lang="en">For 3 years I've been guiding travelers from all over the world through Rio de Janeiro, sharing the best and most authentic experiences the city has to offer!</span></p>
+      <div class="big"><span lang="pt">Mais de 2.000 viajantes já passaram por aqui!</span><span lang="en">More than 2,000 travelers have joined me!</span></div>
+      <div class="sign"><span lang="pt">Te encontro pelo Rio ✨</span><span lang="en">See you in Rio ✨</span></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <h2><span lang="pt">Vamos marcar o seu passeio?</span><span lang="en">Ready to book your experience?</span></h2>
+    <p><span lang="pt">Me chama no WhatsApp ou acompanhe as trilhas nas redes.</span><span lang="en">Message me on WhatsApp or follow the adventures on social media.</span></p>
+    <div class="links">
+      <a data-wa="" href="#reservar-agora"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 20.5l1.8-5.2A8.4 8.4 0 1 1 21 11.5z"></path></svg><span>WhatsApp<small>+55 21 97498-8418</small></span></a>
+      <a href="https://www.instagram.com/claratrilhasrj/" target="_blank" rel="noopener"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1" fill="currentColor"></circle></svg><span>Instagram<small>@claratrilhasrj</small></span></a>
+      <a href="https://www.instagram.com/rj_dejaneiroajaneiro/" target="_blank" rel="noopener"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1" fill="currentColor"></circle></svg><span>Instagram<small>@rj_dejaneiroajaneiro</small></span></a>
+      <a href="https://www.tiktok.com/@claratrilhasrj" target="_blank" rel="noopener"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5"></path><path d="M14 3c.4 2.8 2.3 4.6 5 5"></path></svg><span>TikTok<small>@claratrilhasrj</small></span></a>
+      <a href="https://airbnb.com/x/claratrilhasrj" target="_blank" rel="noopener"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17c-2.5-3.2-4-5.6-4-7.5a4 4 0 0 1 8 0c0 1.9-1.5 4.3-4 7.5z"></path><path d="M12 17c-1.6 2-3.3 3.5-5 3.5a3 3 0 0 1-2.6-4.4L10 4.8a2.3 2.3 0 0 1 4 0l5.6 11.3a3 3 0 0 1-2.6 4.4c-1.7 0-3.4-1.5-5-3.5z"></path></svg><span>Airbnb Experiences<small>claratrilhasrj</small></span></a>
+    </div>
+    <div class="legal">Clara Trilhas RJ · <span lang="pt">Guia de turismo</span><span lang="en">Tour guide</span> · Cadastur 19.289957.63-6 · Rio de Janeiro</div>
+    <div class="credit"><span lang="pt">Site desenvolvido por</span><span lang="en">Website by</span> <a href="https://linxio.com.br/">Linxio</a></div>
+  </div>
+</footer>
+
+<a class="fab" data-wa="" href="#reservar-agora" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 20.5l1.8-5.2A8.4 8.4 0 1 1 21 11.5z"></path></svg>
+</a>
+
+<div class="lead-modal" id="lead-modal" hidden role="dialog" aria-modal="true" aria-labelledby="lead-title">
+  <form class="lead-box" id="lead-form" novalidate>
+    <button type="button" class="lead-close" id="lead-close" aria-label="Fechar"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h2 id="lead-title" data-t="title"></h2>
+    <p data-t="sub"></p>
+    <div class="lf"><label for="lead-nome" data-t="nome"></label><input id="lead-nome" autocomplete="name"></div>
+    <div class="lf"><label for="lead-whats" data-t="whats"></label><input id="lead-whats" type="tel" inputmode="tel" autocomplete="tel" aria-describedby="lead-err"></div>
+    <div class="lf"><label for="lead-tour" data-t="tour"></label><select id="lead-tour"></select></div>
+    <div class="lf-row">
+      <div class="lf"><label for="lead-pessoas" data-t="pessoas"></label><input id="lead-pessoas" type="number" min="1" max="30" inputmode="numeric" value="2"></div>
+      <div class="lf"><label for="lead-data" data-t="data"></label><input id="lead-data" type="date"></div>
+    </div>
+    <p class="lead-err" id="lead-err" hidden data-t="err"></p>
+    <a class="btn btn-wa" id="lead-send" href="#" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 20.5l1.8-5.2A8.4 8.4 0 1 1 21 11.5z"/></svg><span data-t="send"></span></a>
+    <p class="lead-note" data-t="note"></p>
+  </form>
+</div>
+
+<script>
+const WA = '5521974988418';
+const CAT = {
+  trilha: {pt: 'Trilha', en: 'Hike'},
+  favela: {pt: 'Favela', en: 'Favela tour'},
+  mar: {pt: 'No mar', en: 'On the water'},
+  cidade: {pt: 'City tour', en: 'City tour'}
+};
+const TOURS = [
+  {id: 'dois-irmaos', cat: 'trilha', imgs: 4, price: '180', from: false, perPerson: false,
+   pt: {name: 'Morro Dois Irmãos', desc: 'Formação rochosa no Vidigal com 533 metros de altitude, alcançada por uma trilha de 1,5 km. Saídas diárias, inclusive no nascer e no pôr do sol.',
+        meta: ['3 km ida e volta', 'Trilha: ~2h', 'Passeio: ~4h'],
+        details: [['Horários', ['Diariamente', 'Nascer do sol: encontro às 3h', '8h, 9h ou 10h', 'Pôr do sol: encontro às 15h']],
+                  ['Incluso', ['Guiamento', 'Fotos e vídeos']],
+                  ['Não incluso', ['Mototáxi: R$ 7', 'Taxa de entrada da trilha: R$ 10']],
+                  ['Ponto de encontro', ['Praça do Vidigal']]],
+        map: 'http://bit.ly/pcvidigal'},
+   en: {name: 'Dois Irmãos Hill', desc: 'A rock formation in Vidigal rising 533 meters above the sea, reached by a 1.5 km trail. Daily departures, including sunrise and sunset.',
+        meta: ['3 km round trip', 'Hike: ~2h', 'Tour: ~4h'],
+        details: [['Times', ['Daily', 'Sunrise: meet at 3am', '8am, 9am or 10am', 'Sunset: meet at 3pm']],
+                  ['Included', ['Guide', 'Photos and videos']],
+                  ['Not included', ['Motorcycle taxi: R$ 7', 'Trail entrance fee: R$ 10']],
+                  ['Meeting point', ['Vidigal Square (Praça do Vidigal)']]]}},
+  {id: 'pedra-da-gavea', cat: 'trilha', imgs: 6, price: '200', from: false, perPerson: false,
+   pt: {name: 'Pedra da Gávea', desc: 'Uma das trilhas mais desafiadoras do Rio, passando pela Cachoeira do Sorimã, Pedra do Navio, Paredão, Carrasqueira e Platô.',
+        meta: ['8 km ida e volta', 'Nível: difícil', 'Total: ~7h'],
+        details: [['Horários', ['Diariamente', 'Encontro às 7h40']],
+                  ['Incluso', ['Guiamento e equipamentos de segurança', 'Fotos com iPhone']],
+                  ['Opcional', ['Vídeo de drone: R$ 80']],
+                  ['Roteiro', ['Cachoeira do Sorimã', 'Pedra do Navio', 'Paredão (Casca)', 'Carrasqueira', 'Platô']],
+                  ['Ponto de encontro', ['Estrada Sorimã, 932, Itanhangá']]]},
+   en: {name: 'Pedra da Gávea', desc: 'One of the most challenging hikes in Rio, passing Sorimã Waterfall, Pedra do Navio, the rock wall, Carrasqueira and the summit plateau.',
+        meta: ['8 km round trip', 'Level: hard', 'Total: ~7h'],
+        details: [['Times', ['Daily', 'Meet at 7:40am']],
+                  ['Included', ['Guide and safety equipment', 'Photos taken with iPhone']],
+                  ['Optional', ['Drone video: R$ 80']],
+                  ['Route', ['Sorimã Waterfall', 'Pedra do Navio', 'Rock wall (Casca)', 'Carrasqueira', 'Summit plateau']],
+                  ['Meeting point', ['Estrada Sorimã, 932, Itanhangá']]]}},
+  {id: 'garganta-do-ceu', cat: 'trilha', imgs: 3, price: '180', from: false, perPerson: true,
+   pt: {name: 'Garganta do Céu', desc: 'Na face sul da Pedra da Gávea, uma moldura natural de rocha e um mirante com vista única da praia de São Conrado e do Morro Dois Irmãos.',
+        meta: ['2 km', 'Caminhada: ~1h30 (ida)', 'Nível: moderado', '635 m'],
+        details: [['Incluso', ['Guiamento', 'Fotos']],
+                  ['Ponto de encontro', ['Estrada Sorimã, 932']]]},
+   en: {name: 'Garganta do Céu', desc: 'On the south face of Pedra da Gávea, a natural rock frame and viewpoint with a unique angle over São Conrado beach and Dois Irmãos Hill.',
+        meta: ['2 km', 'Hike: ~1h30 (one way)', 'Level: moderate', '635 m'],
+        details: [['Included', ['Guide', 'Photos']],
+                  ['Meeting point', ['Estrada Sorimã, 932']]]}},
+  {id: 'pedra-bonita', cat: 'trilha', imgs: 3, price: '180', from: false, perPerson: true,
+   pt: {name: 'Pedra Bonita', desc: 'Visual incrível com uma subida de 30 a 40 minutos. Percurso leve e sem grandes obstáculos, ótimo para quem está começando.',
+        meta: ['Subida: 30 a 40 min', 'Nível: leve', 'Duração: 4h'],
+        details: [['Horários', ['9h, 11h ou 13h']],
+                  ['Incluso', ['Guia Cadastur', 'Fotos e vídeos']],
+                  ['Não incluso', ['Alimentação', 'Despesas pessoais']],
+                  ['Ponto de encontro', ['Estrada da Pedra Bonita, 740']]]},
+   en: {name: 'Pedra Bonita', desc: 'Stunning views after a 30 to 40 minute climb. An easy trail with no major obstacles, great for beginners.',
+        meta: ['Climb: 30 to 40 min', 'Level: easy', 'Duration: 4h'],
+        details: [['Times', ['9am, 11am or 1pm']],
+                  ['Included', ['Licensed guide (Cadastur)', 'Photos and videos']],
+                  ['Not included', ['Food', 'Personal expenses']],
+                  ['Meeting point', ['Estrada da Pedra Bonita, 740']]]}},
+  {id: 'pedra-do-telegrafo', cat: 'trilha', imgs: 3, price: '350', from: false, perPerson: true,
+   pt: {name: 'Pedra do Telégrafo', desc: 'No Parque Estadual da Pedra Branca, em Barra de Guaratiba. Foi base de observação de submarinos na Segunda Guerra e hoje é famosa pelos seus mirantes.',
+        meta: ['1,8 km', 'Caminhada: ~40 min (ida)', 'Nível: leve', '354 m'],
+        details: [['Incluso', ['Guiamento', 'Fotos', 'Transfer (verifique a disponibilidade para a sua hospedagem)']]]},
+   en: {name: 'Pedra do Telégrafo', desc: 'In Pedra Branca State Park, Barra de Guaratiba. Once a WWII submarine lookout post, now famous for its viewpoints.',
+        meta: ['1.8 km', 'Hike: ~40 min (one way)', 'Level: easy', '354 m'],
+        details: [['Included', ['Guide', 'Photos', 'Transfer (check availability for your accommodation)']]]}},
+  {id: 'vidigal', cat: 'favela', imgs: 5, price: '180', from: false, perPerson: true,
+   pt: {name: 'Tour Imersivo no Vidigal', desc: 'Uma experiência autêntica pelas vielas e becos do Vidigal, com guia local, que te conecta com a cultura, a história e o cotidiano da comunidade.',
+        meta: ['Duração: 2h', 'Fotos incluídas'],
+        details: [['O que você vai viver', ['Projetos sociais e culturais', 'Becos e paredes instagramáveis', 'Bares e pontos tradicionais', 'Contato com moradores', 'Vista incrível do Rio', 'Fotos nos melhores spots']],
+                  ['Não incluso', ['Mototáxi: R$ 10']],
+                  ['Local', ['Favela do Vidigal']]]},
+   en: {name: 'Immersive Vidigal Tour', desc: 'An authentic walk through the alleys of Vidigal with a local guide, connecting you with the culture, history and daily life of the community.',
+        meta: ['Duration: 2h', 'Photos included'],
+        details: [['What you will experience', ['Social and cultural projects', 'Colorful, photogenic alleys', 'Traditional bars and spots', 'Meeting local residents', 'An amazing view of Rio', 'Photos at the best spots']],
+                  ['Not included', ['Motorcycle taxi: R$ 10']],
+                  ['Location', ['Vidigal favela']]]}},
+  {id: 'rocinha', cat: 'favela', imgs: 3, price: '180', from: false, perPerson: true,
+   pt: {name: 'Favela Tour Rocinha', desc: 'Uma das maiores favelas do Brasil, com história e cultura riquíssimas e vistas impressionantes. Corre algum risco? Só o de se apaixonar pela favela.',
+        meta: ['Duração: 2h30 a 3h', 'Saídas diárias'],
+        details: [['Horários', ['9h ou 14h']],
+                  ['Incluso', ['Guia de turismo, cria da favela', 'Fotos e vídeos']],
+                  ['Não incluso', ['Mototáxi: R$ 10', 'Terraço Novo Visual: R$ 30', 'Laje Alto Visual: R$ 5']]]},
+   en: {name: 'Rocinha Favela Tour', desc: 'One of the largest favelas in Brazil, rich in history and culture, with breathtaking views. Any risk? Only of falling in love with the favela.',
+        meta: ['Duration: 2h30 to 3h', 'Daily departures'],
+        details: [['Times', ['9am or 2pm']],
+                  ['Included', ['Tour guide born and raised in the favela', 'Photos and videos']],
+                  ['Not included', ['Motorcycle taxi: R$ 10', 'Terraço Novo Visual: R$ 30', 'Laje Alto Visual: R$ 5']]]}},
+  {id: 'sup', cat: 'mar', imgs: 3, price: '200', from: false, perPerson: true,
+   pt: {name: 'SUP em Copacabana ao nascer do sol', desc: 'Uma das experiências mais procuradas do Rio: remar em Copacabana enquanto o dia nasce.',
+        meta: ['Check-in: 5h', 'Término: 7h', 'Para iniciantes'],
+        details: [['Incluso', ['Fotografia', 'Prancha e colete salva-vidas', 'Guarda-volumes', 'Instrução para iniciantes', 'Guia profissional durante a atividade', 'Instrução em inglês e espanhol']],
+                  ['Extra incluso', ['Fotos com a prancha na areia']]]},
+   en: {name: 'Sunrise SUP in Copacabana', desc: "One of Rio's most sought-after experiences: paddling in Copacabana as the sun comes up.",
+        meta: ['Check-in: 5am', 'Ends: 7am', 'Beginner friendly'],
+        details: [['Included', ['Photography', 'Board and life jacket', 'Locker', 'Beginner instruction', 'Professional guide throughout', 'Instruction in English and Spanish']],
+                  ['Bonus', ['Photos with the board on the sand']]]}},
+  {id: 'city-tour', cat: 'cidade', imgs: 4, price: '400', from: true, perPerson: false,
+   pt: {name: 'City Tour', desc: 'Um roteiro pelo Rio montado do seu jeito, com transporte. Me conta o que você quer conhecer e eu preparo o passeio.',
+        meta: ['Com transporte', 'Roteiro personalizado'],
+        details: []},
+   en: {name: 'City Tour', desc: "A tour of Rio tailored to you, with transportation. Tell me what you'd like to see and I'll put the day together.",
+        meta: ['Transportation included', 'Custom itinerary'],
+        details: []}}
+];
+
+const UI = {
+  pt: {book: 'Reservar no WhatsApp', details: 'Ver detalhes', prev: 'Foto anterior', next: 'Próxima foto', from: 'a partir de', pp: 'por pessoa', map: 'Ver no mapa',
+       msgGeneral: 'Olá, Clara! Vi seu site e quero saber mais sobre os passeios.',
+       msgTour: (n) => `Olá, Clara! Vi seu site e quero reservar o passeio: ${n}.`},
+  en: {book: 'Book on WhatsApp', details: 'See details', prev: 'Previous photo', next: 'Next photo', from: 'from', pp: 'per person', map: 'Open map',
+       msgGeneral: "Hi Clara! I found your website and I'd like to know more about your tours.",
+       msgTour: (n) => `Hi Clara! I found your website and I'd like to book: ${n}.`}
+};
+
+let lang = 'pt';
+let filter = 'all';
+const waLink = (text) => `https://wa.me/${WA}?text=${encodeURIComponent(text)}`;
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+
+function render() {
+  const ui = UI[lang];
+  const html = TOURS.filter((t) => filter === 'all' || t.cat === filter).map((t) => {
+    const c = t[lang];
+    const meta = c.meta.map((m) => `<li>${esc(m)}</li>`).join('');
+    const details = c.details.map(([h, items]) => `<div><h4>${esc(h)}</h4><ul>${items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')
+      + (t.pt.map ? `<div><a href="${t.pt.map}" target="_blank" rel="noopener">${ui.map}</a></div>` : '');
+    const detailsBlock = c.details.length ? `<details><summary>${ui.details}</summary><div class="dt">${details}</div></details>` : '';
+    return `<article class="card">
+      <div class="car" data-car>
+        <div class="car-track">${Array.from({length: t.imgs}, (_, i) => `<img src="https://claratrilhasrj.vercel.app/img/${t.id}-${i + 1}.webp" alt="${esc(c.name)} ${i + 1}/${t.imgs}" loading="lazy" draggable="false">`).join('')}</div>
+        ${t.imgs > 1 ? `<button type="button" class="car-btn prev" aria-label="${ui.prev}" disabled><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button type="button" class="car-btn next" aria-label="${ui.next}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+        <div class="dots">${Array.from({length: t.imgs}, (_, i) => `<i class="${i === 0 ? 'on' : ''}"></i>`).join('')}</div>
+        <span class="count">1/${t.imgs}</span>` : ''}
+      </div>
+      <div class="body">
+        <span class="cat">${CAT[t.cat][lang]}</span>
+        <h3>${esc(c.name)}</h3>
+        <p>${esc(c.desc)}</p>
+        <ul class="meta">${meta}</ul>
+        ${detailsBlock}
+        <div class="price"><div>${t.from ? `<small>${ui.from}</small>` : ''}<b>R$ ${t.price}</b>${t.perPerson ? `<small>${ui.pp}</small>` : ''}</div></div>
+        <a class="btn btn-wa" href="#reservar-agora" data-tour="${t.id}" aria-haspopup="dialog">${ui.book}</a>
+      </div>
+    </article>`;
+  }).join('');
+  document.getElementById('tours').innerHTML = html;
+  initCarousels();
+}
+
+function initCarousels() {
+  document.querySelectorAll('[data-car]').forEach((car) => {
+    const track = car.querySelector('.car-track');
+    const n = track.children.length;
+    if (n < 2) return;
+    const dots = car.querySelectorAll('.dots i');
+    const count = car.querySelector('.count');
+    const prev = car.querySelector('.prev');
+    const next = car.querySelector('.next');
+    const update = () => {
+      const i = Math.round(track.scrollLeft / track.clientWidth);
+      dots.forEach((d, j) => d.classList.toggle('on', j === i));
+      count.textContent = `${i + 1}/${n}`;
+      prev.disabled = i === 0;
+      next.disabled = i === n - 1;
+    };
+    let raf = 0;
+    track.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(update); }, {passive: true});
+    prev.addEventListener('click', () => track.scrollBy({left: -track.clientWidth, behavior: 'smooth'}));
+    next.addEventListener('click', () => track.scrollBy({left: track.clientWidth, behavior: 'smooth'}));
+  });
+}
+
+function setLang(l) {
+  lang = l;
+  document.documentElement.dataset.lang = l;
+  document.documentElement.lang = l === 'pt' ? 'pt-BR' : 'en';
+  document.querySelectorAll('[data-set-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.setLang === l)));
+  if (window.__formLang) window.__formLang(l);
+  render();
+  try { localStorage.setItem('lang', l); } catch (e) {}
+}
+
+document.querySelectorAll('[data-set-lang]').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.setLang)));
+document.querySelectorAll('[data-filter]').forEach((b) => b.addEventListener('click', () => {
+  filter = b.dataset.filter;
+  document.querySelectorAll('[data-filter]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  render();
+}));
+
+/* ===================== Padrão Linxio: formulário, leads e eventos ===================== */
+/* Página de exemplo: o WhatsApp abre no número da Linxio, não no da Clara. */
+const CLIENTE = 'claratrilhas';
+const WA_DESTINO = '5521997557162';
+const LEADS_URL = 'https://webhooks.lucasb2k.shop/webhook/tarzan-site-leads';
+const SB_URL = 'https://ycbokvixbxkekcgnzhwl.supabase.co', SB_KEY = 'sb_publishable_cdAVG9aWMzd9QAZXe6HkZQ_qX3CV8Sb';
+const FORM = {
+  pt: {title: 'Vamos marcar seu passeio', sub: 'Preencha rapidinho e o WhatsApp abre com a mensagem pronta. Você confere antes de enviar.',
+       nome: 'Seu nome', whats: 'Seu WhatsApp', tour: 'Passeio', pessoas: 'Pessoas', data: 'Data (se já souber)',
+       err: 'Coloque seu WhatsApp com DDD pra Clara conseguir te responder.', send: 'Continuar no WhatsApp',
+       note: 'Seus dados são usados só pra responder o seu contato.', nomePh: 'Como posso te chamar?', whatsPh: '(21) 99999-9999',
+       naoSei: 'Ainda não sei, quero ajuda pra escolher', close: 'Fechar'},
+  en: {title: "Let's book your tour", sub: "Fill this in and WhatsApp opens with your message ready. You'll check it before sending.",
+       nome: 'Your name', whats: 'Your WhatsApp (with country code)', tour: 'Experience', pessoas: 'People', data: 'Date (if you know it)',
+       err: 'Add your WhatsApp with country code so Clara can reply.', send: 'Continue on WhatsApp',
+       note: 'Your details are only used to reply to you.', nomePh: 'What should I call you?', whatsPh: '+1 555 123 4567',
+       naoSei: "Not sure yet, I'd like help choosing", close: 'Close'}
+};
+
+/* origem do visitante (UTM) */
+let UTM = {};
+try {
+  const qs = new URLSearchParams(location.search);
+  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach((k) => { if (qs.get(k)) UTM[k] = qs.get(k).slice(0, 120); });
+  if (Object.keys(UTM).length) sessionStorage.setItem('ct-utm', JSON.stringify(UTM));
+  else UTM = JSON.parse(sessionStorage.getItem('ct-utm') || '{}');
+} catch (e) {}
+
+/* eventos: visita, cliques, rolagem, tempo (sem dados pessoais) */
+let SID = '';
+try { SID = sessionStorage.getItem('ct-sid') || ''; if (!SID) { SID = Date.now().toString(36) + Math.random().toString(36).slice(2, 10); sessionStorage.setItem('ct-sid', SID); } } catch (e) { SID = Date.now().toString(36) + Math.random().toString(36).slice(2, 10); }
+let formAberto = false;
+function evento(tipo, alvo) {
+  if (tipo === 'form_aberto') { if (formAberto) return; formAberto = true; }
+  const p = {tipo, sessao: SID, alvo: alvo || '', pagina: location.href.split('#')[0].split('?')[0], referrer: document.referrer || '',
+    utm_source: UTM.utm_source || '', utm_medium: UTM.utm_medium || '', utm_campaign: UTM.utm_campaign || '', utm_content: UTM.utm_content || '',
+    dispositivo: matchMedia('(max-width: 820px)').matches ? 'celular' : 'computador'};
+  try { fetch(SB_URL + '/rest/v1/rpc/registrar_evento', {method: 'POST', keepalive: true, headers: {apikey: SB_KEY, 'Content-Type': 'application/json'}, body: JSON.stringify({p_cliente: CLIENTE, p})}).catch(() => {}); } catch (e) {}
+}
+evento('visita');
+(() => {
+  const marcos = [25, 50, 75, 100], feitos = {};
+  let t;
+  const check = () => {
+    const h = document.documentElement, max = h.scrollHeight - innerHeight; if (max <= 0) return;
+    const pct = Math.round((scrollY || h.scrollTop) / max * 100);
+    marcos.forEach((m) => { if (pct >= m - 2 && !feitos[m]) { feitos[m] = 1; evento('rolagem', m + '%'); } });
+  };
+  addEventListener('scroll', () => { clearTimeout(t); t = setTimeout(check, 250); }, {passive: true});
+})();
+(() => {
+  let visivel = 0, desde = document.visibilityState === 'visible' ? Date.now() : 0, enviado = false;
+  const faixa = (sg) => sg < 10 ? 'menos de 10s' : sg < 30 ? '10 a 30s' : sg < 60 ? '30s a 1 min' : sg < 180 ? '1 a 3 min' : sg < 600 ? '3 a 10 min' : 'mais de 10 min';
+  const sair = () => { if (desde) { visivel += Date.now() - desde; desde = 0; } if (!enviado) { enviado = true; evento('tempo', faixa(Math.round(visivel / 1000))); } };
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') sair(); else if (!desde) desde = Date.now(); });
+  addEventListener('pagehide', sair);
+})();
+
+/* formulário */
+const lm = document.getElementById('lead-modal'), lf = document.getElementById('lead-form');
+const lw = document.getElementById('lead-whats'), lerr = document.getElementById('lead-err'), lsend = document.getElementById('lead-send');
+const lt = document.getElementById('lead-tour');
+const LEAD_ID = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+let lastPartial = '', opened = false, partialT = null, lastFocus = null;
+const val = (id) => document.getElementById(id).value.trim();
+function digits() {
+  const raw = lw.value.trim(); let d = raw.replace(/\D/g, '');
+  if (!raw.startsWith('+') && (d.length === 10 || d.length === 11)) d = '55' + d;
+  return d;
+}
+function tourName(l) { const t = TOURS.find((x) => x.id === lt.value); return t ? t[l].name : ''; }
+function leadData(etapa) {
+  return {cliente: CLIENTE, lead_id: LEAD_ID, etapa, nome: val('lead-nome'), whatsapp: digits(),
+    trilha: tourName('pt') || 'Ainda não sabe', pessoas: String(parseInt(val('lead-pessoas'), 10) || ''), data_trilha: val('lead-data'), idioma: lang,
+    utm_source: UTM.utm_source || '', utm_medium: UTM.utm_medium || '', utm_campaign: UTM.utm_campaign || '', utm_content: UTM.utm_content || '',
+    pagina: location.href.split('#')[0], referrer: document.referrer || ''};
+}
+function fmtData(v) { if (!v) return ''; const [y, m, d] = v.split('-'); return lang === 'pt' ? `${d}/${m}` : `${m}/${d}`; }
+function leadMsg() {
+  const n = val('lead-nome'), tn = tourName(lang), p = parseInt(val('lead-pessoas'), 10), dt = fmtData(val('lead-data'));
+  let m;
+  if (lang === 'pt') {
+    m = 'Olá, Clara! ' + (n ? `Sou ${n}. ` : '') + (tn ? `Vi seu site e quero reservar o passeio: ${tn}` : 'Vi seu site e quero ajuda pra escolher um passeio');
+    if (p) m += `, ${p} ${p === 1 ? 'pessoa' : 'pessoas'}`;
+    if (dt) m += `, dia ${dt}`;
+  } else {
+    m = 'Hi Clara! ' + (n ? `I'm ${n}. ` : '') + (tn ? `I found your website and I'd like to book: ${tn}` : "I found your website and I'd like help choosing a tour");
+    if (p) m += `, ${p} ${p === 1 ? 'person' : 'people'}`;
+    if (dt) m += `, on ${dt}`;
+  }
+  return `https://wa.me/${WA_DESTINO}?text=${encodeURIComponent(m + '.')}`;
+}
+function sendLead(data) {
+  const body = new URLSearchParams(); Object.keys(data).forEach((k) => body.append(k, data[k] == null ? '' : String(data[k])));
+  try { fetch(LEADS_URL, {method: 'POST', mode: 'no-cors', keepalive: true, body}).catch(() => {}); } catch (e) {}
+}
+function sendPartial() {
+  const d = digits(); if (opened || d.length < 11) return;
+  const data = leadData('so_preencheu'); if (!lastPartial) data.primeiro = '1';
+  lastPartial = d; sendLead(data);
+}
+function fillForm(l) {
+  const F = FORM[l];
+  lf.querySelectorAll('[data-t]').forEach((el) => { el.textContent = F[el.dataset.t]; });
+  document.getElementById('lead-nome').placeholder = F.nomePh; lw.placeholder = F.whatsPh;
+  document.getElementById('lead-close').setAttribute('aria-label', F.close);
+  const cur = lt.value;
+  lt.innerHTML = TOURS.map((t) => `<option value="${t.id}">${esc(t[l].name)}</option>`).join('') + `<option value="">${esc(F.naoSei)}</option>`;
+  lt.value = cur || (TOURS[0] && TOURS[0].id);
+  lsend.href = leadMsg();
+}
+window.__formLang = fillForm;
+lw.addEventListener('input', () => { lw.removeAttribute('aria-invalid'); lerr.hidden = true; });
+lw.addEventListener('blur', () => { if (digits() !== lastPartial) sendPartial(); });
+lf.addEventListener('input', () => { lsend.href = leadMsg(); });
+lf.addEventListener('change', (e) => { lsend.href = leadMsg(); if (e.target === lw || !lastPartial) return; clearTimeout(partialT); partialT = setTimeout(sendPartial, 1500); });
+lf.addEventListener('submit', (e) => e.preventDefault());
+lsend.addEventListener('click', (e) => {
+  if (lw.value.replace(/\D/g, '').length < 10) { e.preventDefault(); lw.setAttribute('aria-invalid', 'true'); lerr.hidden = false; lw.focus(); return; }
+  lsend.href = leadMsg(); opened = true; clearTimeout(partialT); evento('clique', 'continuar_whatsapp');
+  sendLead(leadData('abriu_whatsapp'));
+  setTimeout(closeLead, 400);
+});
+function openLead(tourId) {
+  evento('form_aberto');
+  if (tourId !== undefined) lt.value = tourId;
+  lastFocus = document.activeElement; lsend.href = leadMsg(); lm.hidden = false; document.documentElement.classList.add('locked');
+  requestAnimationFrame(() => lm.classList.add('open'));
+  setTimeout(() => document.getElementById('lead-nome').focus({preventScroll: true}), 60);
+}
+function closeLead() {
+  if (!opened) evento('form_fechado', digits().length >= 11 ? 'com_numero' : (val('lead-nome') ? 'comecou_e_parou' : 'vazio'));
+  lm.classList.remove('open'); document.documentElement.classList.remove('locked');
+  setTimeout(() => { lm.hidden = true; if (lastFocus) lastFocus.focus({preventScroll: true}); }, 220);
+}
+document.getElementById('lead-close').addEventListener('click', closeLead);
+lm.addEventListener('click', (e) => { if (e.target === lm) closeLead(); });
+lm.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLead(); });
+
+/* todos os botões de WhatsApp abrem o formulário antes */
+document.querySelectorAll('[data-wa]').forEach((a) => {
+  a.setAttribute('href', '#reservar-agora'); a.removeAttribute('target'); a.removeAttribute('rel'); a.setAttribute('aria-haspopup', 'dialog');
+});
+document.addEventListener('click', (e) => {
+  const a = e.target.closest && e.target.closest('a,button,summary'); if (!a || lm.contains(a)) return;
+  if (a.hasAttribute('data-tour')) { e.preventDefault(); const t = TOURS.find((x) => x.id === a.dataset.tour); evento('clique', 'card: ' + (t ? t.pt.name : a.dataset.tour)); return openLead(a.dataset.tour); }
+  if (a.hasAttribute('data-wa')) { e.preventDefault(); evento('clique', a.classList.contains('fab') ? 'flutuante' : a.closest('.hero') ? 'topo' : a.closest('footer') ? 'final' : 'outro'); return openLead(); }
+  if (a.hasAttribute('data-set-lang')) return evento('navegacao', 'idioma: ' + a.dataset.setLang.toUpperCase());
+  if (a.hasAttribute('data-filter')) return evento('navegacao', 'filtro: ' + ((a.querySelector('[lang="pt"]') || a).textContent.trim().slice(0, 30)));
+  if (a.tagName === 'SUMMARY') { const d = a.parentElement, card = a.closest('.card'); if (d && !d.open) evento('faq', 'detalhes: ' + (card ? card.querySelector('h3').textContent : '')); return; }
+  if (a.classList.contains('car-btn')) return;
+  const href = a.getAttribute('href') || '';
+  if (/^https?:/.test(href)) { try { const u = new URL(href), h = u.hostname.replace(/^www\./, ''); return evento('navegacao', h === 'linxio.com.br' ? 'página: ' + u.pathname : 'link: ' + h + (h.includes('instagram') ? u.pathname.replace(/\/$/, '') : '')); } catch (err) {} }
+  if (href.charAt(0) === '#' && a.textContent.trim()) return evento('navegacao', 'botão: ' + a.textContent.trim().slice(0, 30));
+}, true);
+if (location.hash === '#reservar-agora') setTimeout(() => openLead(), 300);
+
+let initial = 'pt';
+try { initial = localStorage.getItem('lang') || ''; } catch (e) { initial = ''; }
+if (!initial) initial = (navigator.language || 'pt').toLowerCase().startsWith('pt') ? 'pt' : 'en';
+setLang(initial);
+</script>
+
+
+</body></html>
