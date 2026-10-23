@@ -1110,6 +1110,9 @@ html.locked,html.locked body{overflow:hidden}
   var SB_URL='https://ycbokvixbxkekcgnzhwl.supabase.co', SB_KEY='sb_publishable_cdAVG9aWMzd9QAZXe6HkZQ_qX3CV8Sb';
   var SID=''; try{ SID=sessionStorage.getItem('lx-sid')||''; if(!SID){ SID=Date.now().toString(36)+Math.random().toString(36).slice(2,10); sessionStorage.setItem('lx-sid',SID); } }catch(e){ SID=Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
   var formAberto=false;
+  /* qual botão abriu o formulário (vai junto com o lead). Quem veio do passo a passo chega marcado. */
+  var BOTAO=''; try{ BOTAO=sessionStorage.getItem('lx-botao')||''; }catch(e){}
+  function setBotao(b){ BOTAO=b; try{ sessionStorage.setItem('lx-botao',b); }catch(e){} }
   function evento(tipo, alvo){
     if(tipo==='form_aberto'){ if(formAberto) return; formAberto=true; }
     var p={ tipo:tipo, variante:VARIANTE, sessao:SID, alvo:alvo||'', pagina:location.href.split('#')[0].split('?')[0], referrer:document.referrer||'',
@@ -1158,7 +1161,7 @@ html.locked,html.locked body{overflow:hidden}
   function val(id){ return document.getElementById(id).value.trim(); }
   function leadData(etapa){
     return { cliente:'linxio', variante:VARIANTE, lead_id:LEAD_ID, etapa:etapa, nome:val('lead-nome'), whatsapp:digits(),
-      trilha:val('lead-negocio'), site:val('lead-site'), idioma:'pt',
+      trilha:val('lead-negocio'), site:val('lead-site'), idioma:'pt', botao:BOTAO||'link_direto', sessao:SID,
       utm_source:UTM.utm_source||'', utm_medium:UTM.utm_medium||'', utm_campaign:UTM.utm_campaign||'', utm_content:UTM.utm_content||'',
       pagina:location.href.split('#')[0], referrer:document.referrer||'' };
   }
@@ -1194,7 +1197,7 @@ html.locked,html.locked body{overflow:hidden}
   });
   function openLead(){
     if(!formAberto) fb('ViewContent',{content_name:'formulario'});
-    evento('form_aberto');
+    evento('form_aberto', BOTAO||'link_direto');
     lastFocus=document.activeElement; lsend.href=leadMsg(); lm.hidden=false; document.documentElement.classList.add('locked');
     if(window.__lenis) window.__lenis.stop();
     requestAnimationFrame(function(){ lm.classList.add('open'); });
@@ -1293,7 +1296,7 @@ html.locked,html.locked body{overflow:hidden}
     /* todos os botões, inclusive o flutuante, abrem o formulário antes do WhatsApp */
     var alvo = a.getAttribute('data-alvo') || (a.classList.contains('float-wa') ? 'flutuante' : a.closest('.nav') ? 'menu' : a.closest('.hero') ? 'topo' : a.closest('#preco') ? 'preco' : a.closest('.final') ? 'final' : 'outro');
     a.setAttribute('href','#contato'); a.removeAttribute('target'); a.removeAttribute('rel'); a.setAttribute('aria-haspopup','dialog');
-    a.addEventListener('click', function(e){ e.preventDefault(); evento('clique', alvo); openLead(); });
+    a.addEventListener('click', function(e){ e.preventDefault(); setBotao(alvo); evento('clique', alvo); openLead(); });
     return;
     a.href = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent((MSGS[key] || MSGS.lp) + refTag());
     a.addEventListener('click', function(e){
