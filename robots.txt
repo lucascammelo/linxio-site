@@ -2,4 +2,5 @@ User-agent: *
 Disallow: /painel
 Disallow: /exemplos
 Disallow: /b
+Disallow: /midia
 Sitemap: https://linxio.com.br/sitemap.xml
