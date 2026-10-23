@@ -373,7 +373,8 @@ td.c-src,td.c-when{white-space:nowrap}
     var s=(l.utm_source||'').toLowerCase(), m=(l.utm_medium||'').toLowerCase(), paid=/cpc|paid|ads|anuncio|anúncio/.test(m);
     var r=''; try{ r=l.referrer?new URL(l.referrer).hostname.replace(/^www\./,''):''; }catch(e){}
     var base;
-    if(/insta|^ig$/.test(s)||/instagram\./.test(r)) base='Instagram';
+    if(s==='meta') base='Meta';
+    else if(/insta|^ig$/.test(s)||/instagram\./.test(r)) base='Instagram';
     else if(/face|^fb$|meta/.test(s)||/facebook\.|fb\./.test(r)) base='Facebook';
     else if(/google|gads/.test(s)||/google\./.test(r)) base='Google';
     else if(/whats/.test(s)) base='WhatsApp';
@@ -412,7 +413,7 @@ td.c-src,td.c-when{white-space:nowrap}
   function load(){
     if(state.demo){ var all=demoData(), since=Date.now()-state.days*864e5; state.leads=all.filter(function(l){return new Date(l.criado_em)>=since;}); state.events=demoEvents(state.leads,state.days); render(); return Promise.resolve(); }
     var since=new Date(Date.now()-state.days*864e5).toISOString();
-    return sb.from('leads').select('id,lead_id,criado_em,etapa,status,nome,whatsapp,interesse,pessoas,data_desejada,idioma,utm_source,utm_medium,utm_campaign,referrer,extra')
+    return sb.from('leads').select('id,lead_id,criado_em,etapa,status,nome,whatsapp,interesse,pessoas,data_desejada,idioma,utm_source,utm_medium,utm_campaign,utm_content,referrer,extra')
       .eq('cliente_id',state.client.id).gte('criado_em',since).order('criado_em',{ascending:false}).limit(2000)
       .then(function(r){ if(r.error){toast('Não consegui carregar os leads. Atualize a página.'); return;} state.leads=r.data||[];
         return sb.from('eventos').select('tipo,sessao,alvo,utm_source,utm_medium,referrer,criado_em,variante').eq('cliente_id',state.client.id).gte('criado_em',since).limit(20000)
@@ -595,8 +596,12 @@ td.c-src,td.c-when{white-space:nowrap}
 
   /* campos extras do formulário de cada nicho (convênio, horário, tem site...) */
   function rotulo(k){ k=String(k).replace(/[_-]+/g,' ').trim(); return k.charAt(0).toUpperCase()+k.slice(1); }
-  function extraTxt(l){ var e=l.extra||{}; return Object.keys(e).filter(function(k){return k!=='variante'&&e[k]!==''&&e[k]!=null;}).map(function(k){ return (k==='site'?'':rotulo(k)+': ')+e[k]; }).join(' · '); }
+  function extraTxt(l){ var e=l.extra||{}; return Object.keys(e).filter(function(k){return k!=='variante'&&k!=='botao'&&k!=='sessao'&&e[k]!==''&&e[k]!=null;}).map(function(k){ return (k==='site'?'':rotulo(k)+': ')+e[k]; }).join(' · '); }
   function extraHtml(l){ var t=extraTxt(l); return t?'<br><span class="xtra">'+esc(t)+'</span>':''; }
+  /* qual botão da página abriu o formulário (vem no extra.botao) */
+  var BOTOES={topo:'topo da página',menu:'menu',flutuante:'botão flutuante',meio_problema:'meio (problema)',meio_entrega:'meio (o que entrega)',meio_cases:'meio (cases)',meio_painel:'meio (painel)',preco:'preço',final:'final da página',passo_a_passo:'página do passo a passo',link_direto:'link direto'};
+  function botaoTxt(l){ var b=(l.extra||{}).botao; return b?(BOTOES[b]||b):''; }
+  function srcHtml(l){ var o=origin(l)+(l.utm_content?' · '+l.utm_content:''), b=botaoTxt(l); return esc(o)+(b?'<br><span class="xtra">Botão: '+esc(b)+'</span>':''); }
   var ST={novo:'Novo',em_conversa:'Em conversa',fechou:'Fechou',perdeu:'Perdeu'};
   function filtered(){
     var q=$('f-q').value.trim().toLowerCase(), qd=q.replace(/\D/g,''), e=$('f-etapa').value, st=$('f-status').value;
@@ -615,7 +620,7 @@ td.c-src,td.c-when{white-space:nowrap}
         '<td class="c-int">'+esc(l.interesse||'')+extraHtml(l)+'</td>'+
         '<td class="num c-pes" data-l="'+(l.pessoas?(l.pessoas==1?'pessoa':'pessoas'):'')+'">'+(l.pessoas||'')+'</td>'+
         '<td class="num c-data" data-l="'+(l.data_desejada?'para':'')+'">'+esc(dateBR(l.data_desejada))+'</td>'+
-        '<td class="c-src">'+esc(origin(l))+'</td>'+
+        '<td class="c-src">'+srcHtml(l)+'</td>'+
         '<td class="c-msg">'+(l.etapa==='abriu_whatsapp'?'<span class="chip sent">Mandou</span>':'<span class="chip miss">Não mandou</span>')+'</td>'+
         '<td class="c-st"><select class="status" data-id="'+l.id+'" data-v="'+l.status+'" aria-label="Atendimento de '+esc(l.nome||'lead')+'">'+opts+'</select></td>'+
         '<td class="c-wa"><a class="btn btn-wa" href="'+esc(waLink(l))+'" target="_blank" rel="noopener">WhatsApp</a></td></tr>';
