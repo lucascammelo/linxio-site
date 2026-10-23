@@ -20,6 +20,14 @@
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Meta Pixel (Linxio) -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','2195984431264959');
+fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=2195984431264959&ev=PageView&noscript=1"></noscript>
+<!-- fim do Meta Pixel -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: noite azul-oceano, grade editorial de 1200px, faixas separadas por fios finos; laranja só no que é clicável */
@@ -1162,10 +1170,14 @@ html.locked,html.locked body{overflow:hidden}
     return 'https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(m);
   }
   /* manda o número assim que a pessoa sai do campo, mesmo que ela não clique em continuar */
+  /* Meta Pixel: Lead quando a pessoa deixa o WhatsApp (conta uma vez), Contact quando vai pro WhatsApp */
+  var fbLeadSent=false;
+  function fb(ev,params){ try{ if(window.fbq) window.fbq('track',ev,params||{}); }catch(e){} }
+  function fbLead(){ if(fbLeadSent) return; fbLeadSent=true; fb('Lead',{content_name:'landing page'}); }
   function sendPartial(){
     var d=digits(); if(opened || d.length<12) return;
     var data=leadData('so_preencheu'); if(!lastPartial) data.primeiro='1';
-    lastPartial=d; sendLead(data);
+    lastPartial=d; sendLead(data); fbLead();
   }
   lw.addEventListener('input', function(){ lw.removeAttribute('aria-invalid'); lerr.hidden=true; });
   lw.addEventListener('blur', function(){ if(digits()!==lastPartial) sendPartial(); });
@@ -1176,11 +1188,12 @@ html.locked,html.locked body{overflow:hidden}
     if(lw.value.replace(/\D/g,'').length<10){ e.preventDefault(); lw.setAttribute('aria-invalid','true'); lerr.hidden=false; lw.focus(); return; }
     lsend.href = leadMsg(); opened=true; clearTimeout(partialT); evento('clique','continuar_whatsapp');
     sendLead(leadData('abriu_whatsapp'));
-    try{ if(window.fbq) window.fbq('track','Lead'); }catch(err){}
+    fbLead(); fb('Contact',{content_name:'whatsapp'});
     try{ if(window.gtag) window.gtag('event','generate_lead',{origem:'formulario'}); }catch(err){}
     setTimeout(closeLead, 400);
   });
   function openLead(){
+    if(!formAberto) fb('ViewContent',{content_name:'formulario'});
     evento('form_aberto');
     lastFocus=document.activeElement; lsend.href=leadMsg(); lm.hidden=false; document.documentElement.classList.add('locked');
     if(window.__lenis) window.__lenis.stop();
